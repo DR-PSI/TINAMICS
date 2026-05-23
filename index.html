@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TINAMICS — Authorized Siemens Distributor Thailand</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Sarabun:wght@300;400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0f0800; --bg2:#130a00; --bg3:#1a0e00; --panel:#1e1000;
+  --border:#3d1f00; --border2:#5c3000;
+  --gold:#ff8c00; --gold2:#ffb347; --gold3:#cc5500;
+  --cyan:#ff6a00; --text:#f5e6d0; --text2:#c4956a; --text3:#6b3f1a;
+  --white:#fff5e6; --green:#ffaa00;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Sarabun',sans-serif;overflow-x:hidden}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(15,8,0,.95);border-bottom:1px solid var(--border);padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between;overflow:visible}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo-box{width:36px;height:36px;border:2px solid var(--gold);border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'Orbitron',monospace;font-weight:900;font-size:13px;color:var(--gold)}
+.logo-text{font-family:'Orbitron',monospace;font-weight:700;font-size:15px;color:var(--white);letter-spacing:3px}
+.logo-sub{font-size:8px;color:var(--text3);letter-spacing:2px;font-family:'Share Tech Mono',monospace}
+.nav-links{display:flex;gap:28px;list-style:none}
+.nav-links a{color:var(--text2);text-decoration:none;font-size:12px;font-family:'Share Tech Mono',monospace;letter-spacing:1px;transition:color .2s}
+.nav-links a:hover{color:var(--gold)}
+.nav-cta{background:linear-gradient(135deg,var(--gold3),var(--gold));color:#000 !important;padding:7px 18px;border-radius:4px;font-weight:700;font-size:12px !important;font-family:'Sarabun',sans-serif !important}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;align-items:center;padding:80px 48px 60px;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 60% 70% at 75% 50%,rgba(245,166,35,.07),transparent 70%),radial-gradient(ellipse 40% 60% at 20% 80%,rgba(0,212,255,.04),transparent 60%)}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(0,212,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.025) 1px,transparent 1px);background-size:60px 60px}
+.hero-content{position:relative;z-index:1;max-width:640px}
+.badge{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--border2);border-radius:3px;padding:5px 12px;margin-bottom:28px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--gold);letter-spacing:2px}
+.badge-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.hero-tag{font-family:'Share Tech Mono',monospace;font-size:11px;color:#ff8040;letter-spacing:4px;margin-bottom:14px}
+h1.hero-title{font-family:'Orbitron',monospace;font-size:clamp(36px,5.5vw,72px);font-weight:900;line-height:1;margin-bottom:6px}
+.t-main{background:linear-gradient(135deg,var(--white),var(--gold2) 60%,var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;display:block}
+.t-sub{font-size:.36em;letter-spacing:6px;color:var(--text3);display:block;margin-top:10px;-webkit-text-fill-color:var(--text3)}
+.hero-desc{font-size:16px;color:var(--text2);line-height:1.8;margin:24px 0 36px;max-width:520px}
+.hero-desc strong{color:var(--gold)}
+.hero-btns{display:flex;gap:14px;flex-wrap:wrap}
+.btn-p{background:linear-gradient(135deg,var(--gold3),var(--gold));color:#000;padding:12px 28px;border-radius:4px;font-weight:700;font-size:14px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:opacity .2s,transform .2s;border:none;cursor:pointer;font-family:'Sarabun',sans-serif}
+.btn-p:hover{opacity:.88;transform:translateY(-2px)}
+.btn-s{background:transparent;color:var(--text);padding:11px 24px;border-radius:4px;border:1px solid var(--border2);font-size:14px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:all .2s;font-family:'Sarabun',sans-serif}
+.btn-s:hover{border-color:var(--gold);color:var(--gold)}
+
+/* STATS */
+.stats{display:flex;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:rgba(30,16,0,.6);padding:20px 48px}
+.stat{flex:1;text-align:center;padding:0 20px;border-right:1px solid var(--border)}
+.stat:last-child{border-right:none}
+.stat-n{font-family:'Orbitron',monospace;font-size:32px;font-weight:900;color:var(--gold)}
+.stat-l{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:2px;margin-top:4px}
+
+/* SECTIONS */
+section{padding:80px 48px;position:relative}
+.s-tag{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--cyan);letter-spacing:3px;margin-bottom:10px}
+.s-title{font-family:'Orbitron',monospace;font-size:32px;font-weight:700;color:var(--white);line-height:1.2;margin-bottom:14px}
+.s-title span{color:var(--gold)}
+.s-desc{font-size:15px;color:var(--text2);line-height:1.8;max-width:540px}
+.s-head{margin-bottom:48px}
+
+/* SIEMENS BANNER */
+.siem-banner{display:flex;align-items:center;justify-content:space-between;padding:24px 48px;background:rgba(180,80,0,.08);border-top:1px solid rgba(180,80,0,.25);border-bottom:1px solid rgba(180,80,0,.25)}
+.siem-logo{font-family:'Orbitron',monospace;font-size:22px;font-weight:900;color:#ff8040;letter-spacing:4px}
+.siem-div{width:1px;height:36px;background:var(--border2);margin:0 20px}
+.siem-info p{font-size:13px;color:var(--text2)}
+.siem-info strong{color:var(--white)}
+
+/* FEATURES */
+#features{background:var(--bg2)}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:28px;transition:all .25s}
+.card:hover{border-color:var(--border2);transform:translateY(-3px);box-shadow:0 12px 32px rgba(0,0,0,.4)}
+.card-icon{font-size:28px;margin-bottom:16px}
+.card-title{font-family:'Orbitron',monospace;font-size:13px;font-weight:700;color:var(--white);margin-bottom:8px;letter-spacing:1px}
+.card-desc{font-size:13px;color:var(--text2);line-height:1.7}
+.card-tag{display:inline-block;margin-top:14px;padding:2px 10px;border:1px solid var(--border2);border-radius:3px;font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text3);letter-spacing:1px}
+
+/* PRODUCTS */
+#products{background:var(--bg)}
+.prod-card{background:var(--panel);border:1px solid var(--border);border-radius:10px;overflow:hidden;transition:all .25s}
+.prod-card:hover{border-color:rgba(245,166,35,.4);transform:translateY(-3px);box-shadow:0 12px 32px rgba(0,0,0,.5)}
+.prod-img{width:100%;aspect-ratio:4/3;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:48px;border-bottom:1px solid var(--border)}
+.prod-info{padding:18px 20px}
+.prod-cat{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--cyan);letter-spacing:2px;margin-bottom:5px}
+.prod-name{font-family:'Orbitron',monospace;font-size:14px;font-weight:700;color:var(--white);margin-bottom:7px}
+.prod-desc{font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:14px}
+.prod-act{display:flex;align-items:center;justify-content:space-between}
+.prod-btn{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--gold);background:none;border:none;cursor:pointer;padding:0}
+.prod-btn:hover{color:var(--gold2)}
+.prod-badge{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text3);padding:2px 8px;border:1px solid var(--border);border-radius:2px}
+
+/* AI */
+#ai{background:var(--bg2)}
+.ai-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+.ai-panel{background:var(--panel);border:1px solid var(--border2);border-radius:12px;overflow:hidden}
+.ai-panel-head{background:var(--bg3);border-bottom:1px solid var(--border);padding:12px 18px;display:flex;align-items:center;justify-content:space-between}
+.ai-panel-title{font-family:'Orbitron',monospace;font-size:11px;font-weight:700;color:var(--gold);letter-spacing:2px}
+.ai-online{display:flex;align-items:center;gap:5px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--green)}
+.ai-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 2s infinite}
+.ai-chat{padding:20px;min-height:260px;display:flex;flex-direction:column;gap:12px}
+.msg{max-width:85%;padding:9px 13px;border-radius:8px;font-size:13px;line-height:1.6}
+.msg-u{align-self:flex-end;background:rgba(255,140,0,.1);border:1px solid rgba(255,140,0,.25);color:var(--text)}
+.msg-b{align-self:flex-start;background:rgba(255,120,0,.06);border:1px solid rgba(255,120,0,.15);color:var(--text)}
+.msg-b .mn{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--cyan);margin-bottom:3px}
+.hl{color:var(--gold);font-weight:600}
+.cd{font-family:'Share Tech Mono',monospace;color:var(--cyan);font-size:12px}
+.typing{display:none;align-self:flex-start;gap:4px;padding:8px 12px;background:rgba(255,120,0,.06);border:1px solid rgba(255,120,0,.12);border-radius:8px}
+.typing span{width:5px;height:5px;border-radius:50%;background:var(--cyan);animation:bounce 1.4s infinite}
+.typing span:nth-child(2){animation-delay:.2s}
+.typing span:nth-child(3){animation-delay:.4s}
+@keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+.ai-input-row{border-top:1px solid var(--border);padding:12px 18px;display:flex;gap:8px}
+.ai-inp{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:9px 13px;color:var(--text);font-size:13px;font-family:'Sarabun',sans-serif;outline:none;transition:border-color .2s}
+.ai-inp:focus{border-color:var(--gold)}
+.ai-inp::placeholder{color:var(--text3)}
+.ai-send{background:linear-gradient(135deg,var(--gold3),var(--gold));border:none;border-radius:6px;padding:9px 16px;color:#000;font-weight:700;font-size:13px;cursor:pointer;font-family:'Sarabun',sans-serif;transition:opacity .2s}
+.ai-send:hover{opacity:.85}
+.ai-feats{display:flex;flex-direction:column;gap:12px}
+.ai-feat{display:flex;gap:14px;align-items:flex-start;padding:14px 18px;background:rgba(14,26,38,.5);border:1px solid var(--border);border-radius:8px;transition:all .2s}
+.ai-feat:hover{border-color:var(--border2);background:var(--panel)}
+.ai-feat-icon{font-size:22px;width:38px;text-align:center;flex-shrink:0}
+.ai-feat h4{font-family:'Orbitron',monospace;font-size:11px;font-weight:700;color:var(--white);letter-spacing:1px;margin-bottom:3px}
+.ai-feat p{font-size:13px;color:var(--text2);line-height:1.6}
+
+/* ABOUT */
+#about{background:var(--bg)}
+.about-grid{display:grid;grid-template-columns:1fr 1.2fr;gap:60px;align-items:start}
+.cred-list{display:flex;flex-direction:column;gap:10px;margin-top:24px}
+.cred{display:flex;align-items:center;gap:12px;padding:11px 14px;background:var(--panel);border:1px solid var(--border);border-radius:6px}
+.cred-icon{width:34px;height:34px;background:rgba(255,140,0,.08);border:1px solid rgba(255,140,0,.18);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:15px}
+.cred h5{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--gold);letter-spacing:1px}
+.cred p{font-size:12px;color:var(--text2);margin-top:1px}
+.profile{text-align:center;margin-bottom:32px}
+.avatar{width:100px;height:100px;background:linear-gradient(135deg,#cc5500,#ffb347);border-radius:50%;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-family:'Orbitron',monospace;font-size:32px;font-weight:900;color:#000;box-shadow:0 0 32px rgba(255,140,0,.35)}
+.profile-name{font-family:'Orbitron',monospace;font-size:16px;font-weight:700;color:var(--white);margin-bottom:4px}
+.profile-title{font-size:13px;color:var(--gold);margin-bottom:3px}
+.profile-sub{font-size:11px;color:var(--text3);font-family:'Share Tech Mono',monospace;margin-bottom:20px}
+.quote{background:var(--panel);border:1px solid var(--border);border-left:3px solid #ff8c00;border-radius:0 8px 8px 0;padding:14px 18px;text-align:left;font-size:13px;color:var(--text2);line-height:1.7;font-style:italic}
+.tline{display:flex;flex-direction:column;gap:18px}
+.tl-item{display:flex;gap:16px}
+.tl-year{font-family:'Orbitron',monospace;font-size:11px;font-weight:700;color:var(--gold);white-space:nowrap;padding-top:2px;min-width:52px}
+.tl-dot-wrap{display:flex;flex-direction:column;align-items:center}
+.tl-dot{width:9px;height:9px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:3px}
+.tl-line{flex:1;width:1px;background:linear-gradient(to bottom,var(--gold),var(--border));min-height:28px}
+.tl-text h5{font-size:14px;font-weight:600;color:var(--white);margin-bottom:3px}
+.tl-text p{font-size:12px;color:var(--text2);line-height:1.6}
+
+/* PACKAGES */
+#packages{background:var(--bg2)}
+.pkg-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;align-items:start}
+.pkg{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:24px 20px;position:relative;transition:all .25s}
+.pkg:hover{transform:translateY(-3px);box-shadow:0 14px 40px rgba(0,0,0,.5)}
+.pkg.pop{border-color:var(--gold);background:linear-gradient(180deg,rgba(245,166,35,.06),var(--panel) 40%)}
+.pop-badge{position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--gold3),var(--gold));color:#000;font-family:'Share Tech Mono',monospace;font-size:9px;font-weight:700;padding:3px 14px;border-radius:20px;letter-spacing:1px;white-space:nowrap}
+.pkg-tier{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:3px;margin-bottom:10px}
+.pkg-price{font-family:'Orbitron',monospace;font-size:28px;font-weight:900;color:var(--white);margin-bottom:3px}
+.pkg-price .cur{font-size:14px;color:var(--text2);font-weight:400}
+.pkg-price .free{font-size:22px;color:var(--green)}
+.pkg-period{font-size:11px;color:var(--text3);font-family:'Share Tech Mono',monospace;margin-bottom:20px}
+.pkg-div{height:1px;background:var(--border);margin:16px 0}
+.pkg-feats{list-style:none;display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
+.pkg-feats li{font-size:13px;color:var(--text2);display:flex;gap:8px}
+.pkg-feats li::before{content:'✓';color:var(--green);font-size:11px;font-weight:700;flex-shrink:0;margin-top:1px}
+.pkg-btn{width:100%;padding:11px;border-radius:6px;border:1px solid var(--border2);background:transparent;color:var(--text);font-size:13px;font-family:'Sarabun',sans-serif;cursor:pointer;transition:all .2s;text-align:center;text-decoration:none;display:block;font-weight:600}
+.pkg-btn:hover{border-color:var(--gold);color:var(--gold)}
+.pkg-btn.pri{background:linear-gradient(135deg,var(--gold3),var(--gold));color:#000;border:none;font-weight:700}
+.pkg-btn.pri:hover{opacity:.85;color:#000}
+
+/* CONTACT */
+#contact{background:var(--bg)}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start}
+.ct-items{display:flex;flex-direction:column;gap:16px}
+.ct-item{display:flex;gap:14px;align-items:flex-start;padding:18px;background:var(--panel);border:1px solid var(--border);border-radius:8px;transition:border-color .2s}
+.ct-item:hover{border-color:var(--border2)}
+.ct-icon{font-size:20px;width:42px;height:42px;display:flex;align-items:center;justify-content:center;background:rgba(255,140,0,.08);border:1px solid rgba(255,140,0,.18);border-radius:8px;flex-shrink:0}
+.ct-label{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text3);letter-spacing:2px;margin-bottom:3px}
+.ct-val{font-size:14px;color:var(--text);font-weight:600}
+.ct-val a{color:inherit;text-decoration:none}
+.ct-val a:hover{color:var(--gold)}
+.ct-sub{font-size:12px;color:var(--text3);margin-top:1px}
+.ct-form{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:28px}
+.ct-form-title{font-family:'Orbitron',monospace;font-size:15px;font-weight:700;color:var(--white);margin-bottom:20px;letter-spacing:1px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.fg{margin-bottom:14px}
+.fg label{display:block;font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text3);letter-spacing:2px;margin-bottom:5px}
+.fc{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:9px 13px;color:var(--text);font-size:13px;font-family:'Sarabun',sans-serif;outline:none;transition:border-color .2s}
+.fc:focus{border-color:var(--gold)}
+.fc::placeholder{color:var(--text3)}
+textarea.fc{resize:vertical;min-height:90px}
+.form-submit{width:100%;padding:13px;background:linear-gradient(135deg,var(--gold3),var(--gold));border:none;border-radius:6px;color:#000;font-weight:700;font-size:14px;font-family:'Sarabun',sans-serif;cursor:pointer;transition:all .2s;margin-top:6px}
+.form-submit:hover{opacity:.85;transform:translateY(-1px)}
+
+/* FOOTER */
+footer{background:var(--bg);border-top:1px solid var(--border);padding:36px 48px 24px}
+.footer-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:28px}
+.footer-brand .logo-text{font-size:18px;display:block;margin-bottom:4px}
+.footer-desc{font-size:12px;color:var(--text3);max-width:260px;line-height:1.7;margin-top:8px}
+.footer-col h6{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text3);letter-spacing:3px;margin-bottom:12px}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:7px}
+.footer-col a{font-size:13px;color:var(--text2);text-decoration:none;transition:color .2s}
+.footer-col a:hover{color:var(--gold)}
+.footer-bot{border-top:1px solid var(--border);padding-top:18px;display:flex;justify-content:space-between;align-items:center}
+.footer-copy{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:1px}
+.siem-badge-sm{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text3);letter-spacing:2px;display:flex;align-items:center;gap:8px}
+.sb{background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.2);border-radius:3px;padding:2px 8px;color:var(--cyan)}
+
+/* FLOAT WIDGET */
+#fw{position:fixed;bottom:24px;right:20px;z-index:99999;display:flex;flex-direction:column;align-items:flex-end;gap:10px;font-family:'Sarabun',sans-serif}
+#fw-menu{width:276px;border-radius:14px;overflow:hidden;box-shadow:0 8px 36px rgba(0,0,0,.7);display:none;flex-direction:column}
+#fw.open #fw-menu{display:flex}
+.fwr{display:flex;align-items:center;background:#1e0e00;border-bottom:1px solid rgba(255,255,255,.07);text-decoration:none;transition:background .15s}
+.fwr:hover{background:#2e1500}
+.fwr-lbl{flex:1;padding:0 16px;font-size:15px;font-weight:600;color:#ffe8c8}
+.fwr-ico{width:56px;height:56px;border-radius:50%;margin:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .15s}
+.fwr:hover .fwr-ico{transform:scale(1.07)}
+.fw-foot{display:flex;align-items:center;justify-content:space-between;background:#140900;padding:7px 10px 7px 16px;border-top:1px solid rgba(255,255,255,.05)}
+.fw-foot span{font-size:12px;color:#8a5020}
+.fw-foot strong{color:#ff8c00}
+.fw-closex{width:32px;height:32px;border-radius:50%;background:#3d1e00;border:none;color:#c8844a;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+#fw-bar{display:flex;align-items:center;gap:10px}
+#fw-wc{display:flex;align-items:center;gap:8px;background:#1e0e00;border-radius:36px;padding:8px 12px 8px 18px;box-shadow:0 4px 16px rgba(0,0,0,.5)}
+#fw-wc .wct{display:flex;flex-direction:column;line-height:1.25}
+#fw-wc .wct b{font-size:15px;font-weight:700;color:#ffe8c8}
+#fw-wc .wct small{font-size:11px;color:#a06030}
+#fw-wcx{background:none;border:none;color:#a06030;font-size:14px;cursor:pointer;padding:0 4px}
+#fw-wcx:hover{color:#ff7070}
+#fw-btn{width:62px;height:62px;border-radius:50%;background:linear-gradient(145deg,#8B3A00,#D2691E);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 22px rgba(180,80,0,.65);flex-shrink:0;position:relative;transition:transform .18s,box-shadow .18s}
+#fw-btn:hover{transform:scale(1.07)}
+#fw-btn::after{content:'';position:absolute;inset:-8px;border-radius:50%;border:2px solid rgba(210,105,30,.5);animation:fwp 2.4s ease-in-out infinite;pointer-events:none}
+#fw.open #fw-btn::after{display:none}
+@keyframes fwp{0%,100%{transform:scale(1);opacity:.7}55%{transform:scale(1.22);opacity:0}}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .grid3{grid-template-columns:1fr 1fr}
+  .pkg-grid{grid-template-columns:1fr 1fr}
+  .ai-grid,.about-grid,.contact-grid{grid-template-columns:1fr}
+  .hero{padding:80px 24px 48px}
+  section{padding:60px 24px}
+  .stats{padding:18px 24px;flex-wrap:wrap}
+  .stat{flex:0 0 50%;border-right:none;margin-bottom:14px}
+  .siem-banner{flex-direction:column;gap:14px;padding:20px 24px}
+  footer{padding:32px 24px 20px}
+  .footer-top{flex-direction:column;gap:28px}
+  .footer-bot{flex-direction:column;gap:8px;text-align:center}
+  nav{padding:0 20px}
+  .nav-links{display:none}
+}
+@media(max-width:600px){
+  .grid3,.pkg-grid{grid-template-columns:1fr}
+  .form-row{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<nav>
+    <a class="logo" href="#" style="text-decoration:none;display:flex;align-items:center">
+    <div style="
+  position:relative;
+  display:inline-flex;
+  align-items:center;
+  padding:5px 10px;
+  background:rgba(255,140,0,0.05);
+">
+  <!-- top-left corner -->
+  <span style="position:absolute;top:0;left:0;width:10px;height:10px;border-top:2px solid #ff8c00;border-left:2px solid #ff8c00;"></span>
+  <!-- top-right corner -->
+  <span style="position:absolute;top:0;right:0;width:10px;height:10px;border-top:2px solid #ff8c00;border-right:2px solid #ff8c00;"></span>
+  <!-- bottom-left corner -->
+  <span style="position:absolute;bottom:0;left:0;width:10px;height:10px;border-bottom:2px solid #ff8c00;border-left:2px solid #ff8c00;"></span>
+  <!-- bottom-right corner -->
+  <span style="position:absolute;bottom:0;right:0;width:10px;height:10px;border-bottom:2px solid #ff8c00;border-right:2px solid #ff8c00;"></span>
+  <!-- top line segments -->
+  <span style="position:absolute;top:0;left:14px;right:14px;height:1px;background:#ff8c00;opacity:0.5;"></span>
+  <!-- bottom line segments -->
+  <span style="position:absolute;bottom:0;left:14px;right:14px;height:1px;background:#ff8c00;opacity:0.5;"></span>
+  <!-- left line segments -->
+  <span style="position:absolute;left:0;top:14px;bottom:14px;width:1px;background:#ff8c00;opacity:0.5;"></span>
+  <!-- right line segments -->
+  <span style="position:absolute;right:0;top:14px;bottom:14px;width:1px;background:#ff8c00;opacity:0.5;"></span>
+<img src="data:image/jpeg;base64,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" alt="Tinamics Logo" style="height:44px;width:auto;display:block;object-fit:contain"></div>
+  <!-- side text -->
+  <div style="
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    padding-left:10px;
+    border-left:1px solid rgba(255,140,0,0.3);
+    margin-left:8px;
+    gap:2px;
+  ">
+    <span style="font-family:'Orbitron',monospace;font-size:11px;font-weight:700;color:#ff8c00;letter-spacing:2px;white-space:nowrap;">TINAMICS</span>
+    <span style="font-family:'Share Tech Mono',monospace;font-size:9px;color:#c87830;letter-spacing:1.5px;white-space:nowrap;">EE and AI SOLUTION</span>
+  </div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#features">ฟีเจอร์</a></li>
+    <li><a href="#products">สินค้า</a></li>
+    <li><a href="#ai">AI Assistant</a></li>
+    <li><a href="#about">เกี่ยวกับเรา</a></li>
+    <li><a href="#packages">แพ็กเกจ</a></li>
+    <li><a href="#contact" class="nav-cta">ติดต่อเรา</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" style="justify-content:space-between;gap:32px">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="badge"><div class="badge-dot"></div>AUTHORIZED SIEMENS DISTRIBUTOR · THAILAND</div>
+    <div class="hero-tag">// TINAMICS CO.,LTD.</div>
+    <h1 class="hero-title">
+      <span class="t-main">INDUSTRIAL<br>PRODUCT</span>
+      <span class="t-sub">SOLUTION PROVIDER</span>
+    </h1>
+    <p class="hero-desc">ผู้เชี่ยวชาญด้าน <strong>SINAMICS VFD, EOCR, Soft Starter</strong> และ <strong>SIMATIC PLC</strong><br>พร้อม AI Engineering Assistant ที่รู้เรื่องวิศวกรรมจริง ตอบได้จริง 24/7</p>
+    <div class="hero-btns">
+      <a href="https://engbot.hanumanprime.com" class="btn-p" target="_blank">🤖 ทดลอง HANUMAN PRIME AI</a>
+      <a href="#products" class="btn-s">🏭 ดูสินค้า Siemens</a>
+    </div>
+  </div>
+
+  <!-- HANUMAN PRIME CHAT PANEL -->
+  <div id="hp-chat" style="
+    position:relative;z-index:1;
+    width:340px;flex-shrink:0;
+    background:linear-gradient(160deg,#2a1200,#1a0900);
+    border-radius:20px;
+    border:1px solid rgba(255,140,0,0.25);
+    box-shadow:0 8px 40px rgba(0,0,0,0.6);
+    overflow:hidden;
+    display:flex;flex-direction:column;
+  ">
+    <!-- Header -->
+    <div style="padding:16px 18px 12px;border-bottom:1px solid rgba(255,140,0,0.15);display:flex;align-items:center;gap:12px">
+      <div style="
+        width:46px;height:46px;border-radius:12px;
+        background:linear-gradient(135deg,#ff8c00,#cc5500);
+        display:flex;align-items:center;justify-content:center;
+        font-size:26px;flex-shrink:0;
+        box-shadow:0 2px 10px rgba(255,140,0,0.4);
+      ">🦁</div>
+      <div>
+        <div style="font-family:'Orbitron',monospace;font-size:13px;font-weight:700;color:#ff8c00;letter-spacing:2px">HANUMAN PRIME</div>
+        <div style="display:flex;align-items:center;gap:6px;margin-top:3px">
+          <div style="width:7px;height:7px;border-radius:50%;background:#00ff88;animation:blink 2s infinite"></div>
+          <span style="font-family:'Share Tech Mono',monospace;font-size:10px;color:#7a9a7a;letter-spacing:2px">ONLINE · READY</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Divider line -->
+    <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(255,140,0,0.3),transparent);margin:0 18px"></div>
+
+    <!-- Messages -->
+    <div id="hp-messages" style="
+      padding:16px 14px;
+      display:flex;flex-direction:column;gap:12px;
+      min-height:220px;max-height:260px;
+      overflow-y:auto;
+    ">
+      <!-- Bot bubble -->
+      <div style="
+        background:rgba(40,20,5,0.9);
+        border:1px solid rgba(255,140,0,0.15);
+        border-radius:4px 14px 14px 14px;
+        padding:12px 14px;
+        font-size:13px;color:#f5e6d0;line-height:1.6;
+        max-width:90%;
+      ">EOCR สำหรับ Motor 15kW ควรตั้งค่ายังไง ครับ?</div>
+
+      <!-- User bubble -->
+      <div style="
+        background:linear-gradient(135deg,#cc5500,#ff8c00);
+        border-radius:14px 14px 4px 14px;
+        padding:12px 14px;
+        font-size:13px;color:#fff;line-height:1.6;
+        max-width:85%;align-self:flex-end;
+      ">Motor 15kW @ 380V กระแส Full Load ≈ 30A ครับ<br><br>ตั้งค่า OC = 30A, Delay = 5-10s<br>แนะนำ EOCR-3EZ-80AUH ครับ ✓</div>
+
+      <!-- User question -->
+      <div style="
+        background:linear-gradient(135deg,#cc5500,#ff8c00);
+        border-radius:14px 14px 4px 14px;
+        padding:12px 14px;
+        font-size:13px;color:#fff;line-height:1.6;
+        max-width:75%;align-self:flex-end;
+      ">ราคาเท่าไหร่ครับ?</div>
+
+      <!-- Typing indicator -->
+      <div id="hp-typing" style="
+        display:flex;align-items:center;gap:5px;
+        background:rgba(40,20,5,0.9);
+        border:1px solid rgba(255,140,0,0.15);
+        border-radius:4px 14px 14px 14px;
+        padding:12px 16px;
+        width:fit-content;
+      ">
+        <span class="hp-dot"></span>
+        <span class="hp-dot" style="animation-delay:.25s"></span>
+        <span class="hp-dot" style="animation-delay:.5s"></span>
+      </div>
+    </div>
+
+    <!-- Input row -->
+    <div style="
+      padding:10px 12px;
+      border-top:1px solid rgba(255,140,0,0.15);
+      display:flex;gap:8px;align-items:center;
+    ">
+      <input id="hp-inp" type="text" placeholder="ถามเรื่องวิศวกรรม..."
+        style="
+          flex:1;background:rgba(255,255,255,0.05);
+          border:1px solid rgba(255,140,0,0.2);border-radius:8px;
+          padding:9px 13px;color:#f5e6d0;font-size:13px;
+          font-family:'Sarabun',sans-serif;outline:none;
+        "
+        onfocus="this.style.borderColor='#ff8c00'"
+        onblur="this.style.borderColor='rgba(255,140,0,0.2)'"
+        onkeydown="if(event.key==='Enter')hpSend()">
+      <button onclick="hpSend()" style="
+        background:linear-gradient(135deg,#cc5500,#ff8c00);
+        border:none;border-radius:8px;
+        width:36px;height:36px;
+        display:flex;align-items:center;justify-content:center;
+        cursor:pointer;font-size:16px;flex-shrink:0;
+        transition:opacity .2s;
+      " onmouseover="this.style.opacity='.8'" onmouseout="this.style.opacity='1'">➤</button>
+    </div>
+  </div>
+</section>
+
+<style>
+.hero{justify-content:space-between !important}
+.hp-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:#ff8c00;display:inline-block;
+  animation:hpBounce 1.2s ease-in-out infinite;
+}
+@keyframes hpBounce{
+  0%,80%,100%{transform:translateY(0);opacity:.5}
+  40%{transform:translateY(-7px);opacity:1}
+}
+#hp-messages::-webkit-scrollbar{width:3px}
+#hp-messages::-webkit-scrollbar-track{background:transparent}
+#hp-messages::-webkit-scrollbar-thumb{background:#cc5500;border-radius:3px}
+@media(max-width:900px){#hp-chat{display:none}}
+</style>
+
+<script>
+function hpSend(){
+  var inp=document.getElementById('hp-inp');
+  var box=document.getElementById('hp-messages');
+  var typing=document.getElementById('hp-typing');
+  var txt=inp.value.trim();
+  if(!txt)return;
+  inp.value='';
+
+  // User bubble
+  var ub=document.createElement('div');
+  ub.style.cssText='background:linear-gradient(135deg,#cc5500,#ff8c00);border-radius:14px 14px 4px 14px;padding:12px 14px;font-size:13px;color:#fff;line-height:1.6;max-width:80%;align-self:flex-end;';
+  ub.textContent=txt;
+  box.insertBefore(ub,typing);
+  typing.style.display='flex';
+  box.scrollTop=box.scrollHeight;
+
+  // Responses
+  var r=[
+    {q:'vfd',a:'แนะนำ SINAMICS G120X สำหรับ Pump/Fan ครับ ระบุ kW มาได้เลย ✓'},
+    {q:'eocr',a:'EOCR-3EZ Series ตั้งค่าดิจิตอล แม่นยำครับ ✓'},
+    {q:'ราคา',a:'จะส่ง Quotation ทาง Email ครับ\nกรุณาแจ้ง: ชื่อ-บริษัท-เบอร์ ✓'},
+    {q:'plc',a:'SIMATIC S7-1200 / S7-1500 ครับ\nต้องการ I/O กี่จุด? ✓'},
+    {q:'motor',a:'ระบุ kW มาครับ จะคำนวณ FLA + EOCR Setting ให้เลย ✓'},
+    {q:'mtbf',a:'MTBF = Total Hours / Failures ครับ\nตัวอย่าง: 8760h / 3 = 2920h ✓'},
+  ];
+  var reply='ขอบคุณครับ! ติดต่อได้ที่ 📞 02-041-8187 ✓';
+  var low=txt.toLowerCase();
+  for(var i=0;i<r.length;i++){if(low.indexOf(r[i].q)>=0){reply=r[i].a;break;}}
+
+  setTimeout(function(){
+    typing.style.display='none';
+    var bb=document.createElement('div');
+    bb.style.cssText='background:rgba(40,20,5,0.9);border:1px solid rgba(255,140,0,0.15);border-radius:4px 14px 14px 14px;padding:12px 14px;font-size:13px;color:#f5e6d0;line-height:1.6;max-width:90%;';
+    bb.innerHTML=reply.replace(/\n/g,'<br>');
+    box.insertBefore(bb,typing);
+    typing.style.display='flex';
+    box.scrollTop=box.scrollHeight;
+  },1500);
+}
+</script>
+
+<!-- SIEMENS BANNER -->
+<div class="siem-banner">
+  <div style="display:flex;align-items:center">
+    <div class="siem-logo">SIEMENS</div>
+    <div class="siem-div"></div>
+    <div class="siem-info">
+      <p><strong>Authorized Distributor Thailand</strong></p>
+      <p>SINAMICS · SIMATIC · SIRIUS · Drives &amp; Automation</p>
+    </div>
+  </div>
+  <a href="#products" class="btn-s" style="font-size:13px;padding:9px 22px">ดูสินค้าทั้งหมด →</a>
+</div>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat"><div class="stat-n">20+</div><div class="stat-l">ปีประสบการณ์</div></div>
+  <div class="stat"><div class="stat-n">24/7</div><div class="stat-l">AI พร้อมตอบ</div></div>
+  <div class="stat"><div class="stat-n">5+</div><div class="stat-l">Product Lines</div></div>
+  <div class="stat"><div class="stat-n">100%</div><div class="stat-l">Auto Quotation</div></div>
+</div>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="s-head">
+    <div class="s-tag">// CAPABILITIES</div>
+    <h2 class="s-title">AI ที่รู้เรื่อง<span> วิศวกรรมจริง</span></h2>
+    <p class="s-desc">HANUMAN PRIME ไม่ใช่แค่ Chatbot ทั่วไป แต่เป็นผู้ช่วยวิศวกรรมที่รู้จริง ตอบได้จริง</p>
+  </div>
+  <div class="grid3">
+    <div class="card"><div class="card-icon">⚡</div><div class="card-title">ELECTRICAL ENGINEERING</div><p class="card-desc">คำนวณขนาดสายไฟ, Power Factor, Motor Protection, VFD Selection, Short Circuit Analysis</p><span class="card-tag">EE MODULE</span></div>
+    <div class="card"><div class="card-icon">🏭</div><div class="card-title">INDUSTRIAL ENGINEERING</div><p class="card-desc">OEE, Cycle Time, Line Balancing, 5 Why Analysis, Lean, Kaizen, Bottleneck Analysis</p><span class="card-tag">IE MODULE</span></div>
+    <div class="card"><div class="card-icon">🔧</div><div class="card-title">MAINTENANCE ENG.</div><p class="card-desc">MTTR, MTBF, PM Planning, Vibration Analysis, FMEA, Root Cause Analysis เชิงลึก</p><span class="card-tag">MAINTENANCE</span></div>
+    <div class="card"><div class="card-icon">📊</div><div class="card-title">RAM ANALYSIS</div><p class="card-desc">คำนวณ Reliability R(t), Availability, Maintainability M(t), System RAM แบบ Series/Parallel</p><span class="card-tag">RAM CALC</span></div>
+    <div class="card"><div class="card-icon">📋</div><div class="card-title">AUTO QUOTATION</div><p class="card-desc">Bot รวบรวมข้อมูลลูกค้า แล้วส่ง Email แจ้ง Sales ทีมอัตโนมัติ ไม่พลาด Lead ทุกรายการ</p><span class="card-tag">24/7 AUTO</span></div>
+    <div class="card"><div class="card-icon">🤖</div><div class="card-title">WHITE LABEL AI BOT</div><p class="card-desc">บริการสร้าง AI Chatbot สำหรับบริษัทของคุณ พร้อม Knowledge Base เฉพาะทางสินค้า</p><span class="card-tag">ENTERPRISE</span></div>
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<section id="products">
+  <div class="s-head">
+    <div class="s-tag">// PRODUCT CATALOG</div>
+    <h2 class="s-title">Siemens <span>Authorized Products</span></h2>
+    <p class="s-desc">สินค้าครบ บริการหลังการขายที่เชี่ยวชาญ โดยตรงจาก Authorized Distributor</p>
+  </div>
+  <div class="grid3">
+    <div class="prod-card"><div class="prod-img">🔄</div><div class="prod-info"><div class="prod-cat">DRIVES · VFD</div><div class="prod-name">SINAMICS V20</div><p class="prod-desc">Basic Inverter Drive เหมาะสำหรับ Pump, Fan, Conveyor ขนาดเล็กถึงกลาง</p><div class="prod-act"><button class="prod-btn" onclick="alert('ติดต่อ: 02-041-8187')">ขอใบเสนอราคา →</button><span class="prod-badge">SIEMENS OEM</span></div></div></div>
+    <div class="prod-card"><div class="prod-img">⚙️</div><div class="prod-info"><div class="prod-cat">DRIVES · VFD</div><div class="prod-name">SINAMICS G120X</div><p class="prod-desc">General Performance Drive สำหรับ Pump, Fan, Compressor, HVAC ระบบใหญ่</p><div class="prod-act"><button class="prod-btn" onclick="alert('ติดต่อ: 02-041-8187')">ขอใบเสนอราคา →</button><span class="prod-badge">SIEMENS OEM</span></div></div></div>
+    <div class="prod-card"><div class="prod-img">🛡️</div><div class="prod-info"><div class="prod-cat">PROTECTION · RELAY</div><div class="prod-name">EOCR / EUCR Digital</div><p class="prod-desc">Electronic Over/Under Current Relay ป้องกัน Motor ทุกประเภท ตั้งค่าแม่นยำ</p><div class="prod-act"><button class="prod-btn" onclick="alert('ติดต่อ: 02-041-8187')">ขอใบเสนอราคา →</button><span class="prod-badge">SCHNEIDER</span></div></div></div>
+    <div class="prod-card"><div class="prod-img">🌀</div><div class="prod-info"><div class="prod-cat">STARTER · CONTROL</div><div class="prod-name">SIRIUS Soft Start 3RW</div><p class="prod-desc">Soft Starter สำหรับ Motor ขนาดต่างๆ ลด Inrush Current เพิ่มอายุการใช้งาน</p><div class="prod-act"><button class="prod-btn" onclick="alert('ติดต่อ: 02-041-8187')">ขอใบเสนอราคา →</button><span class="prod-badge">SIEMENS OEM</span></div></div></div>
+    <div class="prod-card"><div class="prod-img">💻</div><div class="prod-info"><div class="prod-cat">AUTOMATION · PLC</div><div class="prod-name">SIMATIC S7 PLC / HMI</div><p class="prod-desc">Programmable Logic Controller สำหรับระบบ Automation โรงงาน ครบทุก Series</p><div class="prod-act"><button class="prod-btn" onclick="alert('ติดต่อ: 02-041-8187')">ขอใบเสนอราคา →</button><span class="prod-badge">SIEMENS OEM</span></div></div></div>
+    <div class="prod-card"><div class="prod-img">🔌</div><div class="prod-info"><div class="prod-cat">MOTORS · STANDARD</div><div class="prod-name">Siemens Motors</div><p class="prod-desc">Standard / Explosion-proof Motors ทุกขนาด IE2/IE3 Energy Efficiency Class</p><div class="prod-act"><button class="prod-btn" onclick="alert('ติดต่อ: 02-041-8187')">ขอใบเสนอราคา →</button><span class="prod-badge">SIEMENS OEM</span></div></div></div>
+  </div>
+</section>
+
+<!-- AI ASSISTANT -->
+<section id="ai">
+  <div class="ai-grid">
+    <div>
+      <div class="s-tag">// AI ENGINEERING BOT</div>
+      <h2 class="s-title">HANUMAN PRIME<br><span>AI Assistant</span></h2>
+      <p class="s-desc" style="margin-bottom:28px">ถามได้ทุกเรื่องวิศวกรรม ตั้งแต่การเลือก VFD ถึง RAM Analysis คำนวณ MTBF/MTTR พร้อมรับใบเสนอราคาอัตโนมัติ 24 ชั่วโมง</p>
+      <div class="ai-feats">
+        <div class="ai-feat"><div class="ai-feat-icon">⚡</div><div><h4>ELECTRICAL CALC</h4><p>คำนวณ Motor Protection, VFD Selection, Power Factor Correction ได้ทันที</p></div></div>
+        <div class="ai-feat"><div class="ai-feat-icon">📊</div><div><h4>RAM CALCULATOR</h4><p>คำนวณ Reliability R(t), Availability, MTBF ระบบ Series/Parallel อัตโนมัติ</p></div></div>
+        <div class="ai-feat"><div class="ai-feat-icon">📋</div><div><h4>AUTO QUOTATION</h4><p>Bot collect ข้อมูลลูกค้าและส่ง Email แจ้ง Sales ทีมอัตโนมัติทันที</p></div></div>
+      </div>
+    </div>
+    <div class="ai-panel">
+      <div class="ai-panel-head">
+        <div class="ai-panel-title">HANUMAN PRIME · ENGBOT</div>
+        <div class="ai-online"><div class="ai-dot"></div>ONLINE NOW</div>
+      </div>
+      <div class="ai-chat" id="aiChat">
+        <div class="msg msg-b"><div class="mn">⚡ HANUMAN PRIME</div>สวัสดีครับ! ถามได้เลย เรื่อง VFD, EOCR, PLC หรือ RAM Analysis</div>
+        <div class="msg msg-u">อยากเลือก VFD สำหรับ Pump 22kW 380V</div>
+        <div class="msg msg-b"><div class="mn">⚡ HANUMAN PRIME</div>สำหรับ Pump 22kW @ 380V ครับ:<br>✓ <span class="hl">SINAMICS G120X</span> — เหมาะ Centrifugal Pump<br>✓ Current: <span class="cd">≈ 46A (FLA)</span><br>✓ Model: <span class="cd">6SL3210-1PE24-5UL0</span></div>
+        <div class="typing" id="typing"><span></span><span></span><span></span></div>
+      </div>
+      <div class="ai-input-row">
+        <input type="text" class="ai-inp" id="aiInput" placeholder="ถามเรื่องวิศวกรรม...">
+        <button class="ai-send" onclick="sendMsg()">ส่ง</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="s-head">
+    <div class="s-tag">// ABOUT TINAMICS</div>
+    <h2 class="s-title">ผู้เชี่ยวชาญที่<span> ไว้ใจได้</span></h2>
+  </div>
+  <div class="about-grid">
+    <div>
+      <p class="s-desc" style="margin-bottom:24px">Tinamics ก่อตั้งโดยวิศวกรไฟฟ้าระดับดุษฎีบัณฑิตที่มีประสบการณ์จาก Siemens โดยตรง พร้อมให้คำปรึกษาเชิงลึกทุกเรื่องวิศวกรรม</p>
+      <div class="cred-list">
+        <div class="cred"><div class="cred-icon">🎓</div><div><h5>PhD ELECTRICAL ENGINEERING</h5><p>วิศวกรรมไฟฟ้าศึกษา มจพ. (KMUTNB) 2019</p></div></div>
+        <div class="cred"><div class="cred-icon">📊</div><div><h5>MBA · NIDA</h5><p>สถาบันบัณฑิตพัฒนบริหารศาสตร์</p></div></div>
+        <div class="cred"><div class="cred-icon">⚡</div><div><h5>วิศวกรไฟฟ้ากำลัง PEE สฟก.6427</h5><p>วุฒิวิศวกรไฟฟ้าสามัญ</p></div></div>
+        <div class="cred"><div class="cred-icon">🌐</div><div><h5>IEEE MEMBER 2024 #100283986</h5><p>Institute of Electrical and Electronics Engineers</p></div></div>
+        <div class="cred"><div class="cred-icon">🏭</div><div><h5>EX-SIEMENS PRODUCTS MANAGER</h5><p>Trainer ให้ PTT, Honda, IRPC, TPI Polene</p></div></div>
+      </div>
+    </div>
+    <div>
+      <div class="profile">
+        <div class="avatar">ดร.</div>
+        <div class="profile-name">ดร.พิรพงศ์ ลิ้มประสิทธิ์วงศ์</div>
+        <div class="profile-title">Pirapong Limprasitwong, PhD.EEd</div>
+        <div class="profile-sub">กรรมการผู้จัดการ TINAMICS CO.,LTD.</div>
+        <div class="quote">"ความรู้จาก Siemens โดยตรง ผ่านการฝึกอบรมจากบริษัทแม่ ทำให้เราให้คำปรึกษาที่ถูกต้องและเชื่อถือได้ เราไม่ใช่แค่ขายสินค้า แต่เป็นพาร์ทเนอร์ด้านวิศวกรรมที่แท้จริง"</div>
+      </div>
+      <div class="tline">
+        <div class="tl-item"><div class="tl-year">2548</div><div class="tl-dot-wrap"><div class="tl-dot"></div><div class="tl-line"></div></div><div class="tl-text"><h5>ก่อตั้ง Tinamics Co.,Ltd.</h5><p>เริ่มต้นในฐานะ Siemens Solution Partner ไทย</p></div></div>
+        <div class="tl-item"><div class="tl-year">2019</div><div class="tl-dot-wrap"><div class="tl-dot"></div><div class="tl-line"></div></div><div class="tl-text"><h5>PhD. วิศวกรรมไฟฟ้าศึกษา</h5><p>สำเร็จการศึกษาจาก มจพ. (KMUTNB)</p></div></div>
+        <div class="tl-item"><div class="tl-year">2024</div><div class="tl-dot-wrap"><div class="tl-dot"></div><div class="tl-line"></div></div><div class="tl-text"><h5>IEEE Member &amp; AI Development</h5><p>เปิดตัว HANUMAN PRIME — AI Engineering Assistant</p></div></div>
+        <div class="tl-item"><div class="tl-year">2026</div><div class="tl-dot-wrap"><div class="tl-dot"></div></div><div class="tl-text"><h5>Authorized Siemens Distributor</h5><p>ขยายบริการครบวงจร Drives, PLC, Protection Relay</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PACKAGES -->
+<section id="packages">
+  <div class="s-head">
+    <div class="s-tag">// PRICING</div>
+    <h2 class="s-title">เลือกแพ็กเกจ<span> ที่เหมาะกับคุณ</span></h2>
+    <p class="s-desc">ทดลองใช้ฟรีก่อน ไม่ต้องผูกบัตรเครดิต ยกเลิกได้ตลอดเวลา</p>
+  </div>
+  <div class="pkg-grid">
+    <div class="pkg"><div class="pkg-tier">FREE</div><div class="pkg-price"><span class="free">ฟรี</span></div><div class="pkg-period">20 ครั้ง / ไม่หมดอายุ</div><div class="pkg-div"></div><ul class="pkg-feats"><li>ถามเรื่องวิศวกรรม</li><li>RAM Calculator</li><li>ขอใบเสนอราคา</li></ul><a href="https://engbot.hanumanprime.com" class="pkg-btn" target="_blank">เริ่มใช้ฟรี</a></div>
+    <div class="pkg"><div class="pkg-tier">STARTER</div><div class="pkg-price">500<span class="cur"> บาท</span></div><div class="pkg-period">50 ครั้ง / ไม่หมดอายุ</div><div class="pkg-div"></div><ul class="pkg-feats"><li>ทุกอย่างใน Free</li><li>Knowledge Base เฉพาะ</li><li>Priority Support</li></ul><a href="mailto:dr.ps@hanumanprime.com" class="pkg-btn">สั่งซื้อ</a></div>
+    <div class="pkg pop"><div class="pop-badge">⭐ ยอดนิยม</div><div class="pkg-tier">PRO</div><div class="pkg-price">1,500<span class="cur"> บาท</span></div><div class="pkg-period">200 ครั้ง / ไม่หมดอายุ</div><div class="pkg-div"></div><ul class="pkg-feats"><li>ทุกอย่างใน Starter</li><li>Google Drive KB</li><li>Email แจ้งเตือน</li><li>Admin Dashboard</li></ul><a href="mailto:dr.ps@hanumanprime.com" class="pkg-btn pri">สั่งซื้อ</a></div>
+    <div class="pkg"><div class="pkg-tier">TEAM</div><div class="pkg-price">3,000<span class="cur"> บาท</span></div><div class="pkg-period">500 ครั้ง / ไม่หมดอายุ</div><div class="pkg-div"></div><ul class="pkg-feats"><li>ทุกอย่างใน Pro</li><li>หลาย User</li><li>White Label Bot</li><li>Custom Knowledge</li></ul><a href="mailto:dr.ps@hanumanprime.com" class="pkg-btn">ติดต่อเรา</a></div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="s-head">
+    <div class="s-tag">// CONTACT US</div>
+    <h2 class="s-title">ติดต่อ<span> Tinamics</span></h2>
+    <p class="s-desc">พร้อมให้คำปรึกษา จันทร์-ศุกร์ 8:30-17:30 น. หรือถาม HANUMAN PRIME AI ได้ตลอด 24 ชั่วโมง</p>
+  </div>
+  <div class="contact-grid">
+    <div class="ct-items">
+      <div class="ct-item"><div class="ct-icon">📞</div><div><div class="ct-label">TELEPHONE</div><div class="ct-val"><a href="tel:020418187">02-041-8187</a>, 02-162-0232</div><div class="ct-sub">จันทร์-ศุกร์ 8:30-17:30</div></div></div>
+      <div class="ct-item"><div class="ct-icon">✉️</div><div><div class="ct-label">EMAIL</div><div class="ct-val"><a href="mailto:dr.ps@hanumanprime.com">dr.ps@hanumanprime.com</a></div><div class="ct-sub">ตอบภายใน 24 ชั่วโมง</div></div></div>
+      <div class="ct-item"><div class="ct-icon">💬</div><div><div class="ct-label">LINE ID</div><div class="ct-val">tinamics-ai</div><div class="ct-sub">ติดต่อด่วนผ่าน LINE ได้เลย</div></div></div>
+      <div class="ct-item"><div class="ct-icon">📍</div><div><div class="ct-label">ADDRESS</div><div class="ct-val">22 ซอยเคหะร่มเกล้า 74 แยก 6</div><div class="ct-sub">สะพานสูง กรุงเทพฯ 10240</div></div></div>
+    </div>
+    <div class="ct-form">
+      <div class="ct-form-title">ส่งข้อความหาเรา</div>
+      <div class="form-row">
+        <div class="fg"><label>ชื่อ-นามสกุล</label><input type="text" class="fc" placeholder="วิศวกร สมชาย"></div>
+        <div class="fg"><label>บริษัท</label><input type="text" class="fc" placeholder="ABC Co.,Ltd."></div>
+      </div>
+      <div class="fg"><label>อีเมล</label><input type="email" class="fc" placeholder="engineer@company.com"></div>
+      <div class="fg"><label>เบอร์โทร</label><input type="tel" class="fc" placeholder="08x-xxx-xxxx"></div>
+      <div class="fg"><label>ข้อความ / สินค้าที่ต้องการ</label><textarea class="fc" placeholder="เช่น ต้องการ SINAMICS G120 22kW สำหรับ Pump System..."></textarea></div>
+      <button class="form-submit" onclick="submitForm()">📩 ส่งข้อความ / ขอใบเสนอราคา</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <span class="logo-text">TINAMICS</span>
+      <div style="font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--text3);letter-spacing:2px;margin-top:2px">CO.,LTD.</div>
+      <p class="footer-desc">AI Engineering Assistant เฉพาะทางวิศวกรรม พัฒนาโดย Tinamics Co.,Ltd. Authorized Siemens Distributor Thailand</p>
+    </div>
+    <div class="footer-col"><h6>MENU</h6><ul><li><a href="#features">ฟีเจอร์</a></li><li><a href="#products">สินค้า Siemens</a></li><li><a href="#ai">AI Assistant</a></li><li><a href="#about">เกี่ยวกับเรา</a></li><li><a href="#packages">แพ็กเกจ</a></li></ul></div>
+    <div class="footer-col"><h6>PRODUCTS</h6><ul><li><a href="#">SINAMICS G120X</a></li><li><a href="#">SINAMICS V20</a></li><li><a href="#">EOCR / EUCR</a></li><li><a href="#">SIRIUS Soft Start</a></li><li><a href="#">SIMATIC S7 PLC</a></li></ul></div>
+    <div class="footer-col"><h6>CONTACT</h6><ul><li><a href="tel:020418187">02-041-8187</a></li><li><a href="mailto:dr.ps@hanumanprime.com">dr.ps@hanumanprime.com</a></li><li><a href="#">LINE: tinamics-ai</a></li><li><a href="https://engbot.hanumanprime.com" target="_blank">HANUMAN PRIME Bot</a></li></ul></div>
+  </div>
+  <div class="footer-bot">
+    <div class="footer-copy">© 2026 TINAMICS CO.,LTD. ALL RIGHTS RESERVED.</div>
+    <div class="siem-badge-sm"><span class="sb">AUTHORIZED</span>SIEMENS DISTRIBUTOR · THAILAND</div>
+  </div>
+</footer>
+
+<!-- FLOATING WIDGET -->
+<div id="fw">
+  <div id="fw-menu">
+    <a class="fwr" href="https://m.me/tinamics" target="_blank">
+      <span class="fwr-lbl">แชทผ่าน Facebook</span>
+      <div class="fwr-ico" style="background:#c85000"><svg width="27" height="27" viewBox="0 0 36 36" fill="white"><path d="M18 2C9.16 2 2 8.71 2 17c0 4.67 2.15 8.85 5.54 11.73V33l5.04-2.77A17.2 17.2 0 0018 32c8.84 0 16-6.71 16-15S26.84 2 18 2zm1.68 20.23-4.07-4.34-7.95 4.34 8.74-9.28 4.17 4.34 7.85-4.34-8.74 9.28z"/></svg></div>
+    </a>
+    <a class="fwr" href="https://line.me/ti/p/tinamics-ai" target="_blank">
+      <span class="fwr-lbl">แชทผ่าน LINE</span>
+      <div class="fwr-ico" style="background:#06C755"><svg width="34" height="34" viewBox="0 0 36 36"><path d="M18 5C10.82 5 5 9.93 5 16c0 3.67 2.09 6.94 5.34 9.06-.21.76-.75 2.75-.86 3.18-.14.54.2.53.41.39.18-.11 2.79-1.9 3.92-2.66A15.1 15.1 0 0018 27c7.18 0 13-4.93 13-11S25.18 5 18 5z" fill="white"/><text x="9.2" y="19.5" font-family="Arial Black,Arial" font-weight="900" font-size="6.8" fill="#06C755" letter-spacing="0.4">LINE</text></svg></div>
+    </a>
+    <a class="fwr" href="tel:020418187">
+      <span class="fwr-lbl">โทรหาเรา</span>
+      <div class="fwr-ico" style="background:#F5A623"><svg width="25" height="25" viewBox="0 0 24 24" fill="white"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.28-.28.7-.36 1.06-.22 1.16.46 2.43.72 3.74.72.55 0 1 .45 1 1V20c0 .55-.45 1-1 1C10.61 21 3 13.39 3 4c0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.32.26 2.58.72 3.74.13.36.05.78-.22 1.06z"/></svg></div>
+    </a>
+    <a class="fwr" href="#contact">
+      <span class="fwr-lbl">แชทผ่าน Web</span>
+      <div class="fwr-ico" style="background:#8B4513"><svg width="25" height="25" viewBox="0 0 24 24" fill="white"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg></div>
+    </a>
+    <div class="fw-foot">
+      <span>powered by <strong>Hanuman Prime</strong></span>
+      <button class="fw-closex" onclick="fwClose()">✕</button>
+    </div>
+  </div>
+  <div id="fw-bar">
+    <div id="fw-wc">
+      <div class="wct"><b>โทรหาเราฟรี</b><small>Web Call</small></div>
+      <button id="fw-wcx" onclick="document.getElementById('fw-wc').style.display='none'">✕</button>
+    </div>
+    <button id="fw-btn" onclick="fwToggle()">
+      <svg id="fw-ic" width="28" height="28" viewBox="0 0 24 24" fill="white"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+      <span id="fw-ix" style="display:none;color:#fff;font-size:22px">✕</span>
+    </button>
+  </div>
+</div>
+
+<script>
+function fwToggle(){
+  var fw=document.getElementById('fw');
+  var open=fw.classList.toggle('open');
+  document.getElementById('fw-ic').style.display=open?'none':'block';
+  document.getElementById('fw-ix').style.display=open?'block':'none';
+}
+function fwClose(){
+  document.getElementById('fw').classList.remove('open');
+  document.getElementById('fw-ic').style.display='block';
+  document.getElementById('fw-ix').style.display='none';
+}
+var aiR=[
+  {q:'vfd',a:'แนะนำ SINAMICS G120X สำหรับ Pump/Fan และ V20 สำหรับงานทั่วไปครับ ระบุ Motor kW มาได้เลย ✓'},
+  {q:'eocr',a:'EOCR ป้องกัน Motor จาก Overload ครับ แนะนำ EOCR-3EZ Series ตั้งค่าดิจิตอลแม่นยำ ✓'},
+  {q:'motor',a:'กรุณาระบุ Motor ขนาดกี่ kW ครับ? จะคำนวณ FLA, EOCR Setting, VFD Model ให้เลย ✓'},
+  {q:'plc',a:'SIMATIC S7 Series ครับ\n• S7-1200: ระบบขนาดเล็ก-กลาง\n• S7-1500: Performance สูง ✓'},
+  {q:'ราคา',a:'จะส่งใบเสนอราคาทาง Email ครับ กรุณาแจ้ง: ชื่อ-บริษัท-เบอร์โทร-รายการสินค้า ✓'},
+  {q:'mtbf',a:'MTBF = Total Operating Time / Number of Failures\nตัวอย่าง: 8760h / 3 = 2920 h ✓'},
+];
+function sendMsg(){
+  var inp=document.getElementById('aiInput');
+  var chat=document.getElementById('aiChat');
+  var typ=document.getElementById('typing');
+  var txt=inp.value.trim();
+  if(!txt)return;
+  var um=document.createElement('div');
+  um.className='msg msg-u';um.textContent=txt;
+  chat.insertBefore(um,typ);inp.value='';
+  typ.style.display='flex';chat.scrollTop=chat.scrollHeight;
+  var lower=txt.toLowerCase();
+  var reply='ขอบคุณครับ! ติดต่อได้ที่ 📞 02-041-8187 หรือ LINE: tinamics-ai ✓';
+  for(var i=0;i<aiR.length;i++){if(lower.indexOf(aiR[i].q)>=0){reply=aiR[i].a;break;}}
+  setTimeout(function(){
+    typ.style.display='none';
+    var bm=document.createElement('div');bm.className='msg msg-b';
+    bm.innerHTML='<div class="mn">⚡ HANUMAN PRIME</div>'+reply.replace(/\n/g,'<br>');
+    chat.insertBefore(bm,typ);chat.scrollTop=chat.scrollHeight;
+  },1400);
+}
+document.getElementById('aiInput').addEventListener('keydown',function(e){if(e.key==='Enter')sendMsg();});
+function submitForm(){
+  var b=document.querySelector('.form-submit');
+  b.textContent='✓ ส่งแล้ว! ทีมงานจะติดต่อกลับภายใน 24 ชั่วโมง';
+  b.style.background='#00ff88';b.style.color='#000';
+  setTimeout(function(){b.textContent='📩 ส่งข้อความ / ขอใบเสนอราคา';b.style.background='';b.style.color='';},4000);
+}
+document.querySelectorAll('a[href^="#"]').forEach(function(a){
+  a.addEventListener('click',function(e){
+    var h=a.getAttribute('href');
+    if(h==='#')return;
+    var t=document.querySelector(h);
+    if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth'});}
+  });
+});
+</script>
+</body>
+</html>
