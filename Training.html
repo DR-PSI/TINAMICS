@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Training : PTT — SIEMENS VSD | Tinamics Co.,Ltd.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Sarabun:wght@300;400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0f0800;--bg2:#140a00;--panel:#1e1000;
+  --border:#3d1f00;--border2:#5c3000;
+  --gold:#ff8c00;--gold2:#ffb347;--gold3:#cc5500;
+  --blue:#0066cc;--blue2:#00aaff;
+  --text:#f5e6d0;--text2:#c4956a;--text3:#6b3f1a;
+  --white:#fff5e6;--green:#00cc66;--red:#ff4444;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Sarabun',sans-serif;overflow-x:hidden}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(15,8,0,.96);border-bottom:1px solid var(--border);padding:0 28px;height:60px;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nav-logo-text{font-family:'Orbitron',monospace;font-size:14px;font-weight:700;color:var(--gold);letter-spacing:2px}
+.nav-back{color:var(--text2);text-decoration:none;font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:1px;border:1px solid var(--border2);padding:6px 14px;border-radius:4px;transition:all .2s}
+.nav-back:hover{border-color:var(--gold);color:var(--gold)}
+
+/* HERO */
+.hero{padding:100px 48px 60px;background:linear-gradient(135deg,#1a0800,#0f0500);position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,140,0,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,140,0,.025) 1px,transparent 1px);background-size:50px 50px}
+.hero-inner{position:relative;z-index:1;max-width:900px}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--border2);border-radius:3px;padding:5px 14px;margin-bottom:24px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--gold);letter-spacing:2px}
+.badge-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.hero-title{font-family:'Orbitron',monospace;font-size:clamp(28px,4vw,52px);font-weight:900;line-height:1.1;margin-bottom:16px}
+.hero-title span{color:var(--gold)}
+.hero-sub{font-size:16px;color:var(--text2);line-height:1.8;max-width:640px;margin-bottom:32px}
+.hero-sub strong{color:var(--gold2)}
+.hero-tags{display:flex;gap:10px;flex-wrap:wrap}
+.tag{padding:6px 16px;border-radius:20px;font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:1px;border:1px solid}
+.tag-orange{color:var(--gold);border-color:rgba(255,140,0,.3);background:rgba(255,140,0,.08)}
+.tag-blue{color:var(--blue2);border-color:rgba(0,170,255,.3);background:rgba(0,170,255,.08)}
+.tag-green{color:var(--green);border-color:rgba(0,204,102,.3);background:rgba(0,204,102,.08)}
+
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:rgba(30,16,0,.5)}
+.stat{padding:20px 24px;text-align:center;border-right:1px solid var(--border)}
+.stat:last-child{border-right:none}
+.stat-n{font-family:'Orbitron',monospace;font-size:28px;font-weight:900;color:var(--gold)}
+.stat-l{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:2px;margin-top:4px}
+
+/* SECTION */
+section{padding:64px 48px;position:relative}
+section:nth-child(even){background:var(--bg2)}
+.s-tag{font-family:'Share Tech Mono',monospace;font-size:10px;color:#00aaff;letter-spacing:3px;margin-bottom:10px}
+.s-title{font-family:'Orbitron',monospace;font-size:28px;font-weight:700;color:var(--white);margin-bottom:14px}
+.s-title span{color:var(--gold)}
+.s-desc{font-size:15px;color:var(--text2);line-height:1.8;max-width:700px;margin-bottom:40px}
+
+/* EQUIPMENT TABLE */
+.equip-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.equip-card{background:var(--panel);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.equip-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.equip-header.old{background:rgba(255,68,68,.06);border-bottom-color:rgba(255,68,68,.2)}
+.equip-header.new{background:rgba(0,204,102,.06);border-bottom-color:rgba(0,204,102,.2)}
+.equip-label{font-family:'Orbitron',monospace;font-size:11px;font-weight:700;letter-spacing:2px}
+.equip-label.old{color:#ff4444}
+.equip-label.new{color:#00cc66}
+.equip-body{padding:16px 18px}
+.equip-item{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)}
+.equip-item:last-child{border-bottom:none}
+.equip-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.equip-item.old .equip-dot{background:#ff4444}
+.equip-item.new .equip-dot{background:#00cc66}
+.equip-name{font-size:13px;color:var(--text);font-weight:600}
+.equip-spec{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text3);margin-top:2px}
+
+/* FAULT CODE CARDS */
+.fault-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.fault-card{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:20px;transition:all .25s;cursor:default}
+.fault-card:hover{border-color:var(--border2);transform:translateY(-3px);box-shadow:0 10px 30px rgba(0,0,0,.5)}
+.fault-code{font-family:'Orbitron',monospace;font-size:13px;font-weight:700;margin-bottom:6px}
+.fault-code.fault{color:#ff4444}
+.fault-code.alarm{color:#ffaa00}
+.fault-name{font-size:14px;color:var(--white);font-weight:600;margin-bottom:8px}
+.fault-cause{font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:10px}
+.fault-remedy{background:rgba(0,0,0,.2);border-radius:6px;padding:10px 12px}
+.fault-remedy-title{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--gold);letter-spacing:2px;margin-bottom:6px}
+.fault-remedy p{font-size:11px;color:var(--text2);line-height:1.6}
+
+/* DOCS */
+.docs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.doc-card{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:24px;text-align:center;transition:all .25s;text-decoration:none;display:block}
+.doc-card:hover{border-color:var(--gold);transform:translateY(-3px);box-shadow:0 10px 30px rgba(0,0,0,.5)}
+.doc-icon{font-size:40px;margin-bottom:14px}
+.doc-title{font-family:'Orbitron',monospace;font-size:12px;font-weight:700;color:var(--white);margin-bottom:6px;letter-spacing:1px}
+.doc-desc{font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:16px}
+.doc-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:20px;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1px;border:1px solid rgba(255,140,0,.3);color:var(--gold);background:rgba(255,140,0,.08)}
+
+/* TIMELINE */
+.timeline{display:flex;flex-direction:column;gap:0;position:relative}
+.timeline::before{content:'';position:absolute;left:24px;top:0;bottom:0;width:1px;background:linear-gradient(to bottom,var(--gold),var(--border))}
+.tl-item{display:flex;gap:24px;padding:0 0 32px 0;position:relative}
+.tl-dot{width:10px;height:10px;border-radius:50%;background:var(--gold);border:2px solid var(--bg2);flex-shrink:0;margin-top:4px;z-index:1;margin-left:20px}
+.tl-content{flex:1;background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:16px 18px}
+.tl-num{font-family:'Orbitron',monospace;font-size:10px;color:var(--gold);letter-spacing:2px;margin-bottom:4px}
+.tl-title{font-size:15px;font-weight:700;color:var(--white);margin-bottom:4px}
+.tl-desc{font-size:13px;color:var(--text2);line-height:1.6}
+
+/* VSD TABLE */
+.vsd-table{width:100%;border-collapse:collapse}
+.vsd-table th{background:#2a1200;border:1px solid var(--border);padding:10px 14px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--gold);letter-spacing:1px;text-align:left}
+.vsd-table td{border:1px solid var(--border);padding:10px 14px;font-size:13px;color:var(--text)}
+.vsd-table tr:nth-child(even) td{background:rgba(255,140,0,.03)}
+.vsd-table td.model{font-family:'Share Tech Mono',monospace;color:var(--gold2);font-size:12px}
+.vsd-table td.kw{font-family:'Orbitron',monospace;font-weight:700;color:var(--text)}
+
+/* CONTACT */
+.contact-box{background:linear-gradient(135deg,rgba(255,140,0,.08),rgba(204,85,0,.04));border:1px solid rgba(255,140,0,.25);border-radius:12px;padding:32px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:24px}
+.contact-info h3{font-family:'Orbitron',monospace;font-size:18px;font-weight:700;color:var(--white);margin-bottom:8px}
+.contact-info p{font-size:14px;color:var(--text2);line-height:1.8}
+.contact-btns{display:flex;gap:12px;flex-wrap:wrap}
+.btn-gold{background:linear-gradient(135deg,var(--gold3),var(--gold));color:#000;padding:12px 28px;border-radius:6px;font-weight:700;font-size:14px;text-decoration:none;transition:opacity .2s}
+.btn-gold:hover{opacity:.85}
+.btn-outline{border:1px solid var(--gold);color:var(--gold);padding:11px 24px;border-radius:6px;font-size:14px;text-decoration:none;transition:all .2s}
+.btn-outline:hover{background:rgba(255,140,0,.1)}
+
+/* FOOTER */
+footer{background:var(--bg);border-top:1px solid var(--border);padding:24px 48px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.footer-copy{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:1px}
+
+@media(max-width:900px){
+  section{padding:48px 24px}
+  .hero{padding:90px 24px 48px}
+  .stats{grid-template-columns:1fr 1fr}
+  .stat{border-right:none;border-bottom:1px solid var(--border)}
+  .equip-grid,.docs-grid,.fault-grid{grid-template-columns:1fr}
+  footer{flex-direction:column;text-align:center}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="https://tinamics.com">
+    <span style="font-size:18px">🦁</span>
+    <div class="nav-logo-text">TINAMICS</div>
+  </a>
+  <a class="nav-back" href="https://tinamics.com">← กลับหน้าหลัก</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge"><div class="badge-dot"></div>PTT GROUP · SIEMENS VSD REPLACEMENT · 39 UNITS</div>
+    <h1 class="hero-title">Training : <span>PTT</span><br>SIEMENS VSD Project</h1>
+    <p class="hero-sub">
+      โครงการเปลี่ยนทดแทน Variable Speed Drive จาก <strong>TOSHIBA → SIEMENS SINAMICS G120X</strong><br>
+      พร้อมอบรมทีม Maintenance ของ PTT Group — 39 Units · Drawing & Installation · Fault & Alarm Troubleshooting
+    </p>
+    <div class="hero-tags">
+      <span class="tag tag-orange">SINAMICS G120X</span>
+      <span class="tag tag-orange">SIMATIC S7-1200</span>
+      <span class="tag tag-blue">Equipment Replacement</span>
+      <span class="tag tag-blue">Drawing & Installation</span>
+      <span class="tag tag-green">Fault & Alarm Training</span>
+      <span class="tag tag-green">PTT Group</span>
+    </div>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat"><div class="stat-n">39</div><div class="stat-l">VSD UNITS</div></div>
+  <div class="stat"><div class="stat-n">4</div><div class="stat-l">kW SIZES</div></div>
+  <div class="stat"><div class="stat-n">3</div><div class="stat-l">TRAINING MODULES</div></div>
+  <div class="stat"><div class="stat-n">100%</div><div class="stat-l">SIEMENS OEM</div></div>
+</div>
+
+<!-- EQUIPMENT REPLACEMENT -->
+<section id="equipment">
+  <div class="s-tag">// EQUIPMENT REPLACEMENT</div>
+  <h2 class="s-title">อุปกรณ์เดิม vs <span>อุปกรณ์ใหม่</span></h2>
+  <p class="s-desc">เปลี่ยนทดแทนอุปกรณ์ทั้งหมดภายใน Panel จาก TOSHIBA System เป็น SIEMENS System ครบวงจร</p>
+  <div class="equip-grid">
+    <div class="equip-card">
+      <div class="equip-header old">
+        <span style="font-size:18px">🔴</span>
+        <span class="equip-label old">EXISTING (OLD)</span>
+      </div>
+      <div class="equip-body">
+        <div class="equip-item old">
+          <div class="equip-dot"></div>
+          <div><div class="equip-name">Variable Speed Drive</div><div class="equip-spec">TOSHIBA VFAS1-4220PL</div></div>
+        </div>
+        <div class="equip-item old">
+          <div class="equip-dot"></div>
+          <div><div class="equip-name">Thermistor Protection</div><div class="equip-spec">NHP RT7-E2</div></div>
+        </div>
+        <div class="equip-item old">
+          <div class="equip-dot"></div>
+          <div><div class="equip-name">Power Supply 5A</div><div class="equip-spec">MEANWELL DRT-240-24 (240VAC → 24VDC)</div></div>
+        </div>
+        <div class="equip-item old">
+          <div class="equip-dot"></div>
+          <div><div class="equip-name">Power Supply 10A</div><div class="equip-spec">MEANWELL DRT-240-24 (240VAC → 24VDC)</div></div>
+        </div>
+        <div class="equip-item old">
+          <div class="equip-dot"></div>
+          <div><div class="equip-name">Voltage & Current Relay</div><div class="equip-spec">DUA01CB23500V</div></div>
+        </div>
+        <div class="equip-item old">
+          <div class="equip-dot"></div>
+          <div><div class="equip-name">PLC</div><div class="equip-spec">TOSHIBA T1-16S</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="equip-card">
+      <div class="equip-header new">
+        <span style="font-size:18px">🟢</span>
+        <span class="equip-label new">NEW (SIEMENS)</span>
+      </div>
+      <div class="equip-body">
+        <div class="equip-item new">
+          <div class="equip-dot"></div>
+          <div><div class="equip-name">Variable Speed Drive (4 ขนาด)</div><div class="equip-spec">6SL3220-3YE38-1UB0 (37kW) · 6SL3220-3YE36-1UB0 (30kW)<br>6SL3220-3YE34-1UB0 (22kW) · 6SL3220-3YE24-1UB0 (5.5kW)</div></div>
+        </div>
+        <div class="equip-item new">
+          <div class="equip-dot"></div>
+          <div><div class="equip-name">Thermistor Protection (SIEMENS)</div><div class="equip-spec">3RN20-13-1BW30</div></div>
+        </div>
+        <div class="equip-item new">
+          <div class="equip-dot"></div>
+          <div><div class="equip-name">Power Supply (Phoenix) 5A</div><div class="equip-spec">TRIO-PS-2G/3AC/24VDC/5</div></div>
+        </div>
+        <div class="equip-item new">
+          <div class="equip-dot"></div>
+          <div><div class="equip-name">Power Supply (Phoenix) 10A</div><div class="equip-spec">TRIO-PS-2G/3AC/24VDC/10</div></div>
+        </div>
+        <div class="equip-item new">
+          <div class="equip-dot"></div>
+          <div><div class="equip-name">Voltage Relay (SIEMENS)</div><div class="equip-spec">3UG5616-1CR20</div></div>
+        </div>
+        <div class="equip-item new">
+          <div class="equip-dot"></div>
+          <div><div class="equip-name">PLC SIEMENS S7-1200</div><div class="equip-spec">CPU 1212C (6ES7212-1BG50-0XB0)<br>AI Module (6ES7231-4HD50-0XB0) · DI/DO (6ES7223-5BH50-0XB0)</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VSD MODEL TABLE -->
+<section id="vsd-models" style="background:var(--bg)">
+  <div class="s-tag">// SINAMICS G120X MODELS</div>
+  <h2 class="s-title">รุ่น VSD <span>ที่ติดตั้ง</span></h2>
+  <p class="s-desc">SINAMICS G120X เหมาะสำหรับระบบ Pump, Fan, Compressor — Energy Saving สูงสุดด้วย Built-in Energy Optimizer</p>
+  <table class="vsd-table">
+    <thead>
+      <tr>
+        <th>PART NUMBER</th>
+        <th>POWER</th>
+        <th>APPLICATION</th>
+        <th>FRAME SIZE</th>
+        <th>VOLTAGE</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td class="model">6SL3220-3YE38-1UB0</td><td class="kw">37 kW</td><td>Pump / Fan ขนาดใหญ่</td><td>FSF</td><td>380–480V 3φ</td></tr>
+      <tr><td class="model">6SL3220-3YE36-1UB0</td><td class="kw">30 kW</td><td>Pump / Fan ขนาดกลาง</td><td>FSE</td><td>380–480V 3φ</td></tr>
+      <tr><td class="model">6SL3220-3YE34-1UB0</td><td class="kw">22 kW</td><td>Pump / Fan ขนาดกลาง</td><td>FSD</td><td>380–480V 3φ</td></tr>
+      <tr><td class="model">6SL3220-3YE24-1UB0</td><td class="kw">5.5 kW</td><td>Auxiliary / Small Pump</td><td>FSB</td><td>380–480V 3φ</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- INSTALLATION STEPS -->
+<section id="installation">
+  <div class="s-tag">// DRAWING & INSTALLATION</div>
+  <h2 class="s-title">ขั้นตอน <span>การติดตั้ง</span></h2>
+  <p class="s-desc">ขั้นตอนการเปลี่ยนทดแทน VSD และการ Commissioning ระบบใหม่</p>
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-content"><div class="tl-num">STEP 01</div><div class="tl-title">Survey & Drawing Review</div><div class="tl-desc">ตรวจสอบ Overall Single-Line Diagram ทั้งหมด 3 Sheet — Power Circuit, Control Circuit, PLC I/O Circuit</div></div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-content"><div class="tl-num">STEP 02</div><div class="tl-title">Panel Preparation</div><div class="tl-desc">ถอดอุปกรณ์เดิม (TOSHIBA VSD, PLC, Relay) ออกจาก Panel — ติดตั้ง Plate สำหรับ SINAMICS IOP-2 และ Ventilation Fan PMV320N</div></div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-content"><div class="tl-num">STEP 03</div><div class="tl-title">New Equipment Installation</div><div class="tl-desc">ติดตั้ง SINAMICS G120X, SIMATIC S7-1200, Phoenix Power Supply, SIEMENS Relay ตาม Drawing ใหม่</div></div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-content"><div class="tl-num">STEP 04</div><div class="tl-title">Wiring & I/O Connection</div><div class="tl-desc">ต่อ Control Circuit — 4-20mA Speed Setpoint, Current Indication, Speed Indication จาก/ไป DCS<br>PLC S7-1200: DI/DO, AI Module Wiring ตาม Ladder Diagram</div></div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-content"><div class="tl-num">STEP 05</div><div class="tl-title">Commissioning & Motor ID</div><div class="tl-desc">ตั้งค่า Parameters SINAMICS G120X — Motor Data, Ramp Time, Control Mode, Protection Settings<br>Run Motor Data Identification (p1900 = 1) ก่อน Start จริง</div></div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-content"><div class="tl-num">STEP 06</div><div class="tl-title">Test Run & Handover</div><div class="tl-desc">ทดสอบ Local/Remote, Speed Control, Protection Relay, Fault Simulation ก่อนส่งมอบ</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- FAULT & ALARM GUIDE -->
+<section id="faults">
+  <div class="s-tag">// FAULT & ALARM GUIDE</div>
+  <h2 class="s-title">คู่มือ Fault & Alarm <span>G120 / G120X</span></h2>
+  <p class="s-desc">Fault และ Alarm codes ที่พบบ่อยในงาน Pump/Fan Applications พร้อม Cause และ Corrective Action</p>
+  <div class="fault-grid">
+    <div class="fault-card">
+      <div class="fault-code fault">F30001 / F07801</div>
+      <div class="fault-name">Overcurrent / Motor Overcurrent</div>
+      <div class="fault-cause">กระแสเกินขีดจำกัด — Ramp-up สั้นเกิน, Short circuit, Mechanical Jam</div>
+      <div class="fault-remedy"><div class="fault-remedy-title">REMEDY</div><p>เพิ่ม P1120 (Ramp-up time) · Megger test สายและ Motor · ตรวจ Motor Data · หมุน Shaft ด้วยมือ</p></div>
+    </div>
+    <div class="fault-card">
+      <div class="fault-code fault">F30002</div>
+      <div class="fault-name">DC Link Overvoltage</div>
+      <div class="fault-cause">Deceleration เร็วเกิน Motor ป้อนพลังงานกลับ DC Bus — Supply Voltage สูงเกิน</div>
+      <div class="fault-remedy"><div class="fault-remedy-title">REMEDY</div><p>เพิ่ม P1121 (Ramp-down time) · Enable P1240 Vdc_max Controller · วัด Input Voltage L1,L2,L3</p></div>
+    </div>
+    <div class="fault-card">
+      <div class="fault-code fault">F30003</div>
+      <div class="fault-name">DC Link Undervoltage</div>
+      <div class="fault-cause">ไฟฟ้าดับ/ตก (Brownout) · Fuse ขาด · Breaker ตัด · Phase หาย</div>
+      <div class="fault-remedy"><div class="fault-remedy-title">REMEDY</div><p>วัด L1,L2,L3 ครบ 3 Phase · ตรวจ Contactor และ Breaker · Configure P1210 Auto-Restart</p></div>
+    </div>
+    <div class="fault-card">
+      <div class="fault-code fault">F30021</div>
+      <div class="fault-name">Ground Fault</div>
+      <div class="fault-cause">Ground fault ที่สายไฟ Output หรือ Motor Winding</div>
+      <div class="fault-remedy"><div class="fault-remedy-title">REMEDY</div><p>Megger test สาย Output U,V,W · ตรวจ Motor Winding Insulation · ตรวจ CT</p></div>
+    </div>
+    <div class="fault-card">
+      <div class="fault-code fault">F30024</div>
+      <div class="fault-name">Overtemperature Thermal Model</div>
+      <div class="fault-cause">โหลดเกิน, ระบบระบายความร้อนพัง, อุณหภูมิแวดล้อมสูง</div>
+      <div class="fault-remedy"><div class="fault-remedy-title">REMEDY</div><p>ตรวจ Fan หมุนอิสระ · ลด Pulse Frequency · ตรวจ Ambient Temperature</p></div>
+    </div>
+    <div class="fault-card">
+      <div class="fault-code fault">F07902</div>
+      <div class="fault-name">Motor Stalled / Motor Blocked</div>
+      <div class="fault-cause">Load หนักเกิน Motor หมุนไม่ได้ — Motor ID ยังไม่ได้ทำ</div>
+      <div class="fault-remedy"><div class="fault-remedy-title">REMEDY</div><p>หมุน Shaft ด้วยมือ · Run Motor ID (p1900=1) · ตั้ง Current Limit P0640</p></div>
+    </div>
+    <div class="fault-card">
+      <div class="fault-code alarm">A05000</div>
+      <div class="fault-name">Overtemperature Heat Sink</div>
+      <div class="fault-cause">อุณหภูมิ Heat Sink ถึง Alarm threshold — จะ Fault F30004 ถ้าเพิ่มอีก 5K</div>
+      <div class="fault-remedy"><div class="fault-remedy-title">REMEDY</div><p>ตรวจ Ambient Temperature · ตรวจ Load Duty Cycle · ตรวจระบบ Cooling</p></div>
+    </div>
+    <div class="fault-card">
+      <div class="fault-code alarm">A07805</div>
+      <div class="fault-name">Power Unit Overload I²t</div>
+      <div class="fault-cause">I²t Overload เกิน Alarm threshold P0294</div>
+      <div class="fault-remedy"><div class="fault-remedy-title">REMEDY</div><p>ลด Continuous Load · ปรับ Load Duty Cycle · ตรวจ Motor/Drive current rating</p></div>
+    </div>
+    <div class="fault-card">
+      <div class="fault-code alarm">A07012</div>
+      <div class="fault-name">Motor Over Temperature</div>
+      <div class="fault-cause">Motor ร้อนเกิน — Overload นาน, Cooling ตัน, Sensor ผิดพลาด</div>
+      <div class="fault-remedy"><div class="fault-remedy-title">REMEDY</div><p>วัดอุณหภูมิ Motor ด้วย IR Thermometer · ทำความสะอาด Cooling Fin · ตรวจ P0305</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- TRAINING DOCUMENTS -->
+<section id="docs" style="background:var(--bg)">
+  <div class="s-tag">// TRAINING MATERIALS</div>
+  <h2 class="s-title">เอกสาร <span>ประกอบการฝึกอบรม</span></h2>
+  <p class="s-desc">เอกสารที่ใช้ในการฝึกอบรมทีม Maintenance ของ PTT Group</p>
+  <div class="docs-grid">
+    <a href="https://drive.google.com/drive/folders/1p0oJOg0kid9enuywm043GxqU0iHsyvKF" target="_blank" class="doc-card">
+      <div class="doc-icon">📐</div>
+      <div class="doc-title">DRAWING & INSTALLATION</div>
+      <div class="doc-desc">Overall Single-Line Diagram, Equipment Replacement Layout, Front Door View, Control Circuit ทั้งหมด 8 หน้า</div>
+      <span class="doc-badge">📄 8 PAGES · PDF</span>
+    </a>
+    <a href="https://drive.google.com/drive/folders/1p0oJOg0kid9enuywm043GxqU0iHsyvKF" target="_blank" class="doc-card">
+      <div class="doc-icon">⚠️</div>
+      <div class="doc-title">G120 FAULTS & ALARMS</div>
+      <div class="doc-desc">SINAMICS G120 Interactive Learning Program — Fault/Alarm codes ครบ พร้อม Cause & Remedy</div>
+      <span class="doc-badge">📄 25 PAGES · PDF</span>
+    </a>
+    <a href="https://drive.google.com/drive/folders/1p0oJOg0kid9enuywm043GxqU0iHsyvKF" target="_blank" class="doc-card">
+      <div class="doc-icon">🔧</div>
+      <div class="doc-title">G120X FIELD TROUBLESHOOTING</div>
+      <div class="doc-desc">Fault & Alarm Code Guide สำหรับ G120X — F30001, F30002, F30003, F07902, A07012 พร้อมรูปภาพ</div>
+      <span class="doc-badge">📄 6 PAGES · PDF</span>
+    </a>
+    <a href="https://drive.google.com/drive/folders/1p0oJOg0kid9enuywm043GxqU0iHsyvKF" target="_blank" class="doc-card" style="border-color:rgba(255,140,0,.3)">
+      <div class="doc-icon">⚡</div>
+      <div class="doc-title" style="color:var(--gold)">TINAMICS BASIC VSD</div>
+      <div class="doc-desc">พื้นฐาน Variable Speed Drive สำหรับทีม Maintenance · หลักการทำงาน · การตั้งค่า · การดูแลรักษา</div>
+      <span class="doc-badge">📂 OPEN DRIVE ↗</span>
+    </a>
+    <a href="https://engbot.hanumanprime.com" target="_blank" class="doc-card" style="border-color:rgba(255,140,0,.3);background:linear-gradient(160deg,rgba(255,140,0,.06),var(--panel))">
+      <div class="doc-icon">🤖</div>
+      <div class="doc-title" style="color:var(--gold)">AI สำหรับวิศวกรรมบำรุงรักษา</div>
+      <div class="doc-desc">HANUMAN PRIME AI — ถามเรื่อง MTBF, MTTR, RAM Analysis, Fault Code, VSD Setting ได้ทันที 24/7</div>
+      <span class="doc-badge" style="color:var(--gold);border-color:rgba(255,140,0,.3);background:rgba(255,140,0,.08)">🦁 HANUMAN PRIME ↗</span>
+    </a>
+  </div>
+
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-box">
+    <div class="contact-info">
+      <h3>สอบถามข้อมูลเพิ่มเติม</h3>
+      <p>📞 02-041-8187 | 02-162-0232<br>✉️ dr.ps@hanumanprime.com<br>💬 LINE: tinamics-ai</p>
+    </div>
+    <div class="contact-btns">
+      <a href="tel:020418187" class="btn-gold">📞 โทรหาเรา</a>
+      <a href="https://engbot.hanumanprime.com" target="_blank" class="btn-outline">🤖 ถาม HANUMAN PRIME AI</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-copy">© 2026 TINAMICS CO.,LTD. · PTT TRAINING : SIEMENS VSD 39 UNITS</div>
+  <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text3)">Authorized "SIEMENS" System Integrator (SI) · THAILAND</div>
+</footer>
+
+</body>
+</html>
