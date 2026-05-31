@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WorkScan — ระบบตรวจจับใบหน้าอัจฉริยะ</title>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600;700;800;900&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --orange: #FF5C00;
+  --orange-light: #FF8C42;
+  --orange-dark: #CC4900;
+  --black: #0D0D0D;
+  --dark: #1A1A1A;
+  --gray: #2A2A2A;
+  --text: #F0F0F0;
+  --text-dim: #999;
+  --white: #FFFFFF;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--black);
+  color: var(--text);
+  font-family: 'Kanit', sans-serif;
+  font-weight: 300;
+  overflow-x: hidden;
+}
+
+/* NOISE TEXTURE */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 0; opacity: 0.4;
+}
+
+/* NAV */
+nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 100;
+  padding: 20px 60px;
+  display: flex; align-items: center; justify-content: space-between;
+  background: rgba(13,13,13,0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255,92,0,0.15);
+}
+
+.nav-logo {
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 600;
+  font-size: 22px;
+  color: var(--orange);
+  letter-spacing: 3px;
+}
+
+.nav-logo span { color: var(--white); }
+
+.nav-links {
+  display: flex; gap: 40px;
+  list-style: none;
+}
+
+.nav-links a {
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+  transition: color 0.3s;
+}
+
+.nav-links a:hover { color: var(--orange); }
+
+.nav-cta {
+  background: var(--orange);
+  color: var(--white) !important;
+  padding: 10px 24px;
+  border-radius: 2px;
+  font-weight: 600 !important;
+  letter-spacing: 1px;
+  transition: background 0.3s !important;
+}
+
+.nav-cta:hover { background: var(--orange-dark) !important; color: var(--white) !important; }
+
+/* HERO */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex; align-items: center;
+  padding: 120px 60px 80px;
+  overflow: hidden;
+}
+
+.hero-bg {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 80% 60% at 70% 50%, rgba(255,92,0,0.12) 0%, transparent 70%);
+}
+
+.hero-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(255,92,0,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,92,0,0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 80% 80% at 70% 50%, black 30%, transparent 100%);
+}
+
+.hero-content {
+  position: relative; z-index: 1;
+  max-width: 600px;
+}
+
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(255,92,0,0.1);
+  border: 1px solid rgba(255,92,0,0.3);
+  padding: 6px 16px;
+  border-radius: 100px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--orange);
+  letter-spacing: 2px;
+  margin-bottom: 32px;
+  animation: fadeUp 0.6s ease both;
+}
+
+.hero-badge-dot {
+  width: 6px; height: 6px;
+  background: var(--orange);
+  border-radius: 50%;
+  animation: pulse-orange 2s infinite;
+}
+
+@keyframes pulse-orange {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(255,92,0,0.4); }
+  50% { opacity: 0.7; box-shadow: 0 0 0 6px rgba(255,92,0,0); }
+}
+
+.hero-title {
+  font-size: clamp(52px, 7vw, 88px);
+  font-weight: 900;
+  line-height: 0.95;
+  letter-spacing: -2px;
+  margin-bottom: 24px;
+  animation: fadeUp 0.6s ease 0.1s both;
+}
+
+.hero-title .line1 { display: block; color: var(--white); }
+.hero-title .line2 { display: block; color: var(--orange); }
+.hero-title .line3 { display: block; color: var(--text-dim); font-weight: 300; font-size: 0.55em; letter-spacing: 0px; }
+
+.hero-desc {
+  font-size: 17px;
+  line-height: 1.7;
+  color: var(--text-dim);
+  margin-bottom: 40px;
+  max-width: 480px;
+  animation: fadeUp 0.6s ease 0.2s both;
+}
+
+.hero-cta {
+  display: flex; gap: 16px; flex-wrap: wrap;
+  animation: fadeUp 0.6s ease 0.3s both;
+}
+
+.btn-primary {
+  background: var(--orange);
+  color: var(--white);
+  padding: 16px 36px;
+  border-radius: 2px;
+  font-family: 'Kanit', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-decoration: none;
+  border: none; cursor: pointer;
+  transition: all 0.3s;
+  display: inline-flex; align-items: center; gap: 8px;
+}
+
+.btn-primary:hover {
+  background: var(--orange-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(255,92,0,0.3);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--text);
+  padding: 16px 36px;
+  border-radius: 2px;
+  font-family: 'Kanit', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: 1px;
+  text-decoration: none;
+  border: 1px solid rgba(255,255,255,0.2);
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-secondary:hover {
+  border-color: var(--orange);
+  color: var(--orange);
+}
+
+/* HERO VISUAL */
+.hero-visual {
+  position: absolute;
+  right: 60px; top: 50%; transform: translateY(-50%);
+  width: 500px; height: 500px;
+  animation: fadeIn 1s ease 0.4s both;
+}
+
+.scan-ring {
+  position: absolute; inset: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(255,92,0,0.2);
+  animation: rotate 20s linear infinite;
+}
+
+.scan-ring:nth-child(2) {
+  inset: 40px;
+  border-color: rgba(255,92,0,0.15);
+  animation-duration: 15s;
+  animation-direction: reverse;
+}
+
+.scan-ring:nth-child(3) {
+  inset: 80px;
+  border-color: rgba(255,92,0,0.1);
+  animation-duration: 25s;
+}
+
+.face-box {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 200px; height: 240px;
+  border: 2px solid var(--orange);
+  box-shadow: 0 0 40px rgba(255,92,0,0.2), inset 0 0 40px rgba(255,92,0,0.05);
+  animation: scan-anim 3s ease-in-out infinite;
+}
+
+.face-corner {
+  position: absolute;
+  width: 20px; height: 20px;
+  border-color: var(--orange);
+  border-style: solid;
+}
+.face-corner.tl { top:-2px; left:-2px; border-width: 3px 0 0 3px; }
+.face-corner.tr { top:-2px; right:-2px; border-width: 3px 3px 0 0; }
+.face-corner.bl { bottom:-2px; left:-2px; border-width: 0 0 3px 3px; }
+.face-corner.br { bottom:-2px; right:-2px; border-width: 0 3px 3px 0; }
+
+.scan-beam {
+  position: absolute;
+  left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--orange), transparent);
+  animation: beam 2s ease-in-out infinite;
+  box-shadow: 0 0 10px rgba(255,92,0,0.8);
+}
+
+.face-label {
+  position: absolute;
+  top: -32px; left: -2px;
+  background: var(--orange);
+  color: var(--white);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 3px 10px;
+  letter-spacing: 2px;
+}
+
+.face-info {
+  position: absolute;
+  bottom: -28px; left: -2px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  color: var(--orange);
+  letter-spacing: 1px;
+}
+
+.data-points {
+  position: absolute; inset: 0;
+}
+
+.data-point {
+  position: absolute;
+  width: 4px; height: 4px;
+  background: var(--orange);
+  border-radius: 50%;
+  opacity: 0.6;
+}
+
+@keyframes rotate { to { transform: rotate(360deg); } }
+@keyframes scan-anim {
+  0%, 100% { box-shadow: 0 0 20px rgba(255,92,0,0.2), inset 0 0 20px rgba(255,92,0,0.05); }
+  50% { box-shadow: 0 0 60px rgba(255,92,0,0.4), inset 0 0 60px rgba(255,92,0,0.1); }
+}
+@keyframes beam {
+  0% { top: 0; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* STATS BAR */
+.stats-bar {
+  position: relative; z-index: 1;
+  background: var(--dark);
+  border-top: 1px solid rgba(255,92,0,0.15);
+  border-bottom: 1px solid rgba(255,92,0,0.15);
+  padding: 40px 60px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+}
+
+.stat-item {
+  text-align: center;
+  padding: 0 20px;
+  border-right: 1px solid rgba(255,255,255,0.07);
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.6s ease;
+}
+
+.stat-item:last-child { border-right: none; }
+.stat-item.visible { opacity: 1; transform: translateY(0); }
+
+.stat-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 48px;
+  font-weight: 600;
+  color: var(--orange);
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.stat-label {
+  font-size: 14px;
+  color: var(--text-dim);
+  font-weight: 300;
+}
+
+/* SECTION */
+section {
+  position: relative; z-index: 1;
+  padding: 100px 60px;
+}
+
+.section-tag {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--orange);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  display: flex; align-items: center; gap: 12px;
+}
+
+.section-tag::before {
+  content: '';
+  width: 30px; height: 1px;
+  background: var(--orange);
+}
+
+.section-title {
+  font-size: clamp(36px, 4vw, 56px);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -1px;
+  margin-bottom: 20px;
+}
+
+.section-desc {
+  font-size: 17px;
+  color: var(--text-dim);
+  max-width: 500px;
+  line-height: 1.7;
+  margin-bottom: 60px;
+}
+
+/* HOW IT WORKS */
+.how-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+}
+
+.how-card {
+  background: var(--dark);
+  padding: 40px 32px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s;
+}
+
+.how-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--orange);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s;
+}
+
+.how-card:hover::before { transform: scaleX(1); }
+.how-card:hover { background: #222; }
+
+.how-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 64px;
+  font-weight: 600;
+  color: rgba(255,92,0,0.12);
+  line-height: 1;
+  margin-bottom: 20px;
+  transition: color 0.3s;
+}
+
+.how-card:hover .how-num { color: rgba(255,92,0,0.25); }
+
+.how-icon {
+  font-size: 32px;
+  margin-bottom: 16px;
+}
+
+.how-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: var(--white);
+}
+
+.how-desc {
+  font-size: 14px;
+  color: var(--text-dim);
+  line-height: 1.6;
+  font-weight: 300;
+}
+
+/* FEATURES */
+.features-section {
+  background: var(--dark);
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+}
+
+.feature-card {
+  background: var(--black);
+  padding: 40px;
+  transition: all 0.3s;
+  cursor: default;
+}
+
+.feature-card:hover {
+  background: #181818;
+  transform: translateY(-4px);
+}
+
+.feature-icon-wrap {
+  width: 56px; height: 56px;
+  background: rgba(255,92,0,0.1);
+  border: 1px solid rgba(255,92,0,0.2);
+  border-radius: 2px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px;
+  margin-bottom: 24px;
+  transition: all 0.3s;
+}
+
+.feature-card:hover .feature-icon-wrap {
+  background: rgba(255,92,0,0.2);
+  border-color: var(--orange);
+}
+
+.feature-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.feature-desc {
+  font-size: 14px;
+  color: var(--text-dim);
+  line-height: 1.7;
+  font-weight: 300;
+}
+
+/* PRICING */
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  margin-top: 60px;
+}
+
+.pricing-card {
+  background: var(--dark);
+  padding: 48px 40px;
+  position: relative;
+  transition: all 0.3s;
+}
+
+.pricing-card.featured {
+  background: var(--orange);
+  transform: translateY(-16px);
+}
+
+.pricing-card:not(.featured):hover {
+  background: #222;
+  transform: translateY(-4px);
+}
+
+.pricing-badge {
+  position: absolute; top: -14px; left: 40px;
+  background: var(--white);
+  color: var(--orange);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 4px 12px;
+  letter-spacing: 2px;
+}
+
+.pricing-name {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 3px;
+  color: var(--text-dim);
+  margin-bottom: 16px;
+}
+
+.pricing-card.featured .pricing-name { color: rgba(255,255,255,0.7); }
+
+.pricing-price {
+  font-size: 52px;
+  font-weight: 900;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.pricing-card.featured .pricing-price { color: var(--white); }
+
+.pricing-unit {
+  font-size: 14px;
+  color: var(--text-dim);
+  margin-bottom: 32px;
+  font-weight: 300;
+}
+
+.pricing-card.featured .pricing-unit { color: rgba(255,255,255,0.7); }
+
+.pricing-features {
+  list-style: none;
+  display: flex; flex-direction: column; gap: 12px;
+  margin-bottom: 40px;
+}
+
+.pricing-features li {
+  font-size: 14px;
+  color: var(--text-dim);
+  font-weight: 300;
+  display: flex; align-items: flex-start; gap: 10px;
+}
+
+.pricing-card.featured .pricing-features li { color: rgba(255,255,255,0.85); }
+
+.pricing-features li::before {
+  content: '✓';
+  color: var(--orange);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.pricing-card.featured .pricing-features li::before { color: var(--white); }
+
+.pricing-btn {
+  width: 100%;
+  padding: 14px;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.2);
+  color: var(--white);
+  font-family: 'Kanit', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.3s;
+  border-radius: 2px;
+}
+
+.pricing-btn:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+.pricing-card.featured .pricing-btn {
+  background: var(--white);
+  color: var(--orange);
+  border-color: var(--white);
+}
+
+.pricing-card.featured .pricing-btn:hover {
+  background: rgba(255,255,255,0.9);
+}
+
+/* MARKET */
+.market-section { background: var(--dark); }
+
+.market-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2px;
+  margin-top: 60px;
+}
+
+.market-card {
+  background: var(--black);
+  padding: 40px;
+  display: flex; align-items: flex-start; gap: 24px;
+  transition: all 0.3s;
+}
+
+.market-card:hover { background: #181818; }
+
+.market-icon {
+  font-size: 36px;
+  flex-shrink: 0;
+  width: 64px; height: 64px;
+  background: rgba(255,92,0,0.1);
+  border-radius: 2px;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.market-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.market-desc {
+  font-size: 14px;
+  color: var(--text-dim);
+  line-height: 1.6;
+  font-weight: 300;
+}
+
+.market-tag {
+  display: inline-block;
+  background: rgba(255,92,0,0.1);
+  border: 1px solid rgba(255,92,0,0.2);
+  color: var(--orange);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  padding: 3px 10px;
+  border-radius: 100px;
+  margin-top: 10px;
+  letter-spacing: 1px;
+}
+
+/* COMPARE */
+.compare-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 60px;
+}
+
+.compare-table th {
+  padding: 16px 20px;
+  text-align: left;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: var(--text-dim);
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+
+.compare-table th.highlight { color: var(--orange); }
+
+.compare-table td {
+  padding: 16px 20px;
+  font-size: 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  color: var(--text-dim);
+  font-weight: 300;
+}
+
+.compare-table td.highlight {
+  color: var(--white);
+  font-weight: 600;
+}
+
+.compare-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+.check { color: var(--orange); font-weight: 700; }
+.cross { color: #555; }
+
+/* CTA SECTION */
+.cta-section {
+  background: var(--orange);
+  padding: 100px 60px;
+  text-align: center;
+}
+
+.cta-title {
+  font-size: clamp(40px, 5vw, 72px);
+  font-weight: 900;
+  color: var(--white);
+  line-height: 1.1;
+  letter-spacing: -2px;
+  margin-bottom: 20px;
+}
+
+.cta-desc {
+  font-size: 18px;
+  color: rgba(255,255,255,0.8);
+  margin-bottom: 48px;
+  font-weight: 300;
+}
+
+.cta-btns {
+  display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
+}
+
+.btn-white {
+  background: var(--white);
+  color: var(--orange);
+  padding: 16px 40px;
+  border-radius: 2px;
+  font-family: 'Kanit', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-decoration: none;
+  border: none; cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-white:hover {
+  background: rgba(255,255,255,0.9);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.2);
+}
+
+.btn-outline-white {
+  background: transparent;
+  color: var(--white);
+  padding: 16px 40px;
+  border-radius: 2px;
+  font-family: 'Kanit', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: 1px;
+  text-decoration: none;
+  border: 2px solid rgba(255,255,255,0.5);
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-outline-white:hover {
+  border-color: var(--white);
+  background: rgba(255,255,255,0.1);
+}
+
+/* FOOTER */
+footer {
+  background: var(--black);
+  border-top: 1px solid rgba(255,92,0,0.1);
+  padding: 40px 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.footer-logo {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--orange);
+  letter-spacing: 3px;
+}
+
+.footer-logo span { color: var(--white); }
+
+.footer-text {
+  font-size: 13px;
+  color: var(--text-dim);
+  font-weight: 300;
+}
+
+/* SCROLL ANIMATIONS */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.7s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* MOBILE */
+@media (max-width: 900px) {
+  nav { padding: 16px 24px; }
+  .nav-links { display: none; }
+  .hero { padding: 100px 24px 60px; }
+  .hero-visual { display: none; }
+  .stats-bar { grid-template-columns: repeat(2, 1fr); padding: 40px 24px; }
+  section { padding: 60px 24px; }
+  .how-grid, .features-grid, .pricing-grid, .market-grid { grid-template-columns: 1fr; }
+  .pricing-card.featured { transform: none; }
+  footer { flex-direction: column; gap: 16px; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div>
+    <div class="nav-logo">WORK<span>SCAN</span></div>
+    <div style="font-size:10px;color:var(--text-dim);letter-spacing:1px;margin-top:2px;font-family:'IBM Plex Mono',monospace;">Powered by Hanuman Prime</div>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#how">วิธีทำงาน</a></li>
+    <li><a href="#features">ฟีเจอร์</a></li>
+    <li><a href="#pricing">ราคา</a></li>
+    <li><a href="#market">ตลาด</a></li>
+    <li><a href="#contact" class="nav-cta">ติดต่อเรา</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="hero-badge-dot"></span>
+      AI FACE RECOGNITION
+    </div>
+    <h1 class="hero-title">
+      <span class="line1">รู้จักทุกคน</span>
+      <span class="line2">ทันทีที่เห็น</span>
+      <span class="line3">ระบบตรวจจับใบหน้าอัจฉริยะ</span>
+    </h1>
+    <p class="hero-desc">
+      WorkScan ตรวจจับและจดจำใบหน้าพนักงานแบบ Real-time แจ้งเตือนทันทีเมื่อเจอคนแปลกหน้า บันทึกเวลาเข้า-ออกอัตโนมัติ ไม่ต้องติดตั้งซอฟต์แวร์พิเศษ
+    </p>
+    <div class="hero-cta">
+      <a href="#pricing" class="btn-primary">ดูราคา →</a>
+      <a href="#how" class="btn-secondary">ดูวิธีทำงาน</a>
+    </div>
+  </div>
+
+  <!-- VISUAL -->
+  <div class="hero-visual">
+    <div class="scan-ring"></div>
+    <div class="scan-ring"></div>
+    <div class="scan-ring"></div>
+    <div class="face-box">
+      <div class="face-corner tl"></div>
+      <div class="face-corner tr"></div>
+      <div class="face-corner bl"></div>
+      <div class="face-corner br"></div>
+      <div class="scan-beam"></div>
+      <div class="face-label">AUTHORIZED</div>
+      <div class="face-info">EMP-001 • 94% MATCH</div>
+    </div>
+    <!-- Data points -->
+    <div class="data-points">
+      <div class="data-point" style="top:20%;left:15%"></div>
+      <div class="data-point" style="top:35%;left:80%"></div>
+      <div class="data-point" style="top:70%;left:25%"></div>
+      <div class="data-point" style="top:65%;left:75%"></div>
+      <div class="data-point" style="top:10%;left:60%"></div>
+      <div class="data-point" style="top:85%;left:55%"></div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat-item">
+    <div class="stat-num" data-target="94">0</div>
+    <div class="stat-label">ความแม่นสูงสุด %</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num" data-target="0.5">0</div>
+    <div class="stat-label">วินาที ต่อการสแกน</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num" data-target="7900">0</div>
+    <div class="stat-label">ราคาเริ่มต้น (บาท)</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num" data-target="70">0</div>
+    <div class="stat-label">ถูกกว่าคู่แข่ง %</div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="section-tag">วิธีทำงาน</div>
+  <h2 class="section-title reveal">ง่าย ใช้ได้จริง<br>ภายใน 10 นาที</h2>
+  <p class="section-desc reveal">WorkScan ออกแบบมาให้ใช้งานง่าย ลูกค้าสามารถติดตั้งและเริ่มใช้งานได้เองโดยไม่ต้องมีความรู้ด้านเทคนิค</p>
+
+  <div class="how-grid">
+    <div class="how-card reveal">
+      <div class="how-num">01</div>
+      <div class="how-icon">📷</div>
+      <div class="how-title">ติดกล้อง</div>
+      <div class="how-desc">ติดตั้งกล้อง IP Camera หรือ Webcam ที่จุดเข้า-ออก สูง 1.8-2 เมตร หันหน้าลงเล็กน้อย</div>
+    </div>
+    <div class="how-card reveal">
+      <div class="how-num">02</div>
+      <div class="how-icon">👤</div>
+      <div class="how-title">ลงทะเบียน</div>
+      <div class="how-desc">ถ่ายภาพใบหน้าพนักงานแต่ละคน ระบบ AI จะจดจำใบหน้าและเก็บข้อมูลไว้ในเครื่อง</div>
+    </div>
+    <div class="how-card reveal">
+      <div class="how-num">03</div>
+      <div class="how-icon">🔍</div>
+      <div class="how-title">ตรวจจับ</div>
+      <div class="how-desc">ระบบสแกนใบหน้าตลอดเวลา แสดงชื่อและ % ความมั่นใจบนหน้าจอแบบ Real-time</div>
+    </div>
+    <div class="how-card reveal">
+      <div class="how-num">04</div>
+      <div class="how-icon">🔔</div>
+      <div class="how-title">แจ้งเตือน</div>
+      <div class="how-desc">บันทึกเวลาเข้า-ออกอัตโนมัติ แจ้งเตือน LINE ทันทีเมื่อเจอคนแปลกหน้า</div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features" class="features-section">
+  <div class="section-tag">ฟีเจอร์</div>
+  <h2 class="section-title reveal">ครบทุกฟีเจอร์<br>ที่ธุรกิจต้องการ</h2>
+
+  <div class="features-grid">
+    <div class="feature-card reveal">
+      <div class="feature-icon-wrap">🎯</div>
+      <div class="feature-title">Face Recognition AI</div>
+      <div class="feature-desc">จดจำใบหน้าด้วย AI 128 จุด ความแม่นสูงถึง 94% ทำงานบนเบราว์เซอร์ได้เลยไม่ต้องติดตั้งเพิ่ม</div>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon-wrap">⚡</div>
+      <div class="feature-title">Real-time Detection</div>
+      <div class="feature-desc">แสดงชื่อและกรอบบนใบหน้าตลอดเวลา สแกนทุก 0.5 วินาที รองรับหลายใบหน้าพร้อมกัน</div>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon-wrap">🔔</div>
+      <div class="feature-title">แจ้งเตือน LINE</div>
+      <div class="feature-desc">ส่งข้อความ LINE อัตโนมัติเมื่อมีการเข้า-ออก หรือเจอคนแปลกหน้า พร้อมชื่อและเวลา</div>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon-wrap">📊</div>
+      <div class="feature-title">รายงาน Excel</div>
+      <div class="feature-desc">Export รายงานการเข้า-ออกงานเป็น Excel ได้ทันที ครบทุกข้อมูลที่ต้องการ</div>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon-wrap">🚨</div>
+      <div class="feature-title">แจ้งเตือนคนแปลกหน้า</div>
+      <div class="feature-desc">ตรวจจับและแจ้งเตือนทันทีเมื่อเจอคนที่ไม่ได้ลงทะเบียน เสียงเตือนและ popup บนหน้าจอ</div>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon-wrap">💾</div>
+      <div class="feature-title">บันทึกข้อมูลถาวร</div>
+      <div class="feature-desc">เก็บข้อมูลใบหน้าในเครื่องถาวร ไม่หายเมื่อเปิดใหม่ ไม่ต้องลงทะเบียนซ้ำ</div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="section-tag">ราคา</div>
+  <h2 class="section-title reveal">ราคาที่ทุกธุรกิจ<br>เข้าถึงได้</h2>
+  <p class="section-desc reveal">เริ่มต้นด้วยตัวเองได้ทันที หรือให้ทีมงานช่วยติดตั้งและตั้งค่าให้</p>
+
+  <div class="pricing-grid">
+    <div class="pricing-card reveal">
+      <div class="pricing-name">STARTER</div>
+      <div class="pricing-price">4,900<span style="font-size:24px;font-weight:300">฿</span></div>
+      <div class="pricing-unit">Software อย่างเดียว (ไม่รวมกล้อง)</div>
+      <ul class="pricing-features">
+        <li>WorkScan Software ครบฟีเจอร์</li>
+        <li>คู่มือติดตั้ง PDF + VDO</li>
+        <li>Support LINE 30 วัน</li>
+        <li>ลงทะเบียนพนักงานไม่จำกัด</li>
+        <li style="color:#555">ไม่รวมกล้อง</li>
+      </ul>
+      <button class="pricing-btn">สั่งซื้อเลย</button>
+    </div>
+
+    <div class="pricing-card featured reveal">
+      <div class="pricing-badge">ยอดนิยม</div>
+      <div class="pricing-name">BASIC</div>
+      <div class="pricing-price">7,900<span style="font-size:24px;font-weight:300">฿</span></div>
+      <div class="pricing-unit">Software + กล้อง 1 ตัว</div>
+      <ul class="pricing-features">
+        <li>WorkScan Software ครบฟีเจอร์</li>
+        <li>กล้อง IP Camera 1080p 1 ตัว</li>
+        <li>คู่มือติดตั้ง PDF + VDO</li>
+        <li>Support LINE 60 วัน</li>
+        <li>แจ้งเตือน LINE</li>
+      </ul>
+      <button class="pricing-btn">สั่งซื้อเลย</button>
+    </div>
+
+    <div class="pricing-card reveal">
+      <div class="pricing-name">STANDARD</div>
+      <div class="pricing-price">12,900<span style="font-size:24px;font-weight:300">฿</span></div>
+      <div class="pricing-unit">Software + กล้อง 2 ตัว</div>
+      <ul class="pricing-features">
+        <li>WorkScan Software ครบฟีเจอร์</li>
+        <li>กล้อง IP Camera 1080p 2 ตัว</li>
+        <li>คู่มือติดตั้ง PDF + VDO</li>
+        <li>Support LINE 90 วัน</li>
+        <li>แจ้งเตือน LINE + รายงาน Excel</li>
+      </ul>
+      <button class="pricing-btn">สั่งซื้อเลย</button>
+    </div>
+  </div>
+
+  <!-- Add-ons -->
+  <div style="margin-top: 40px; background: var(--dark); padding: 40px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px;" class="reveal">
+    <div>
+      <div style="font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--orange); letter-spacing:2px; margin-bottom:12px;">บริการเพิ่มเติม</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;justify-content:space-between;font-size:14px;color:var(--text-dim)"><span>ดูหน้างาน + สาธิต</span><span style="color:var(--white);font-weight:600">800฿</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:14px;color:var(--text-dim)"><span>ติดตั้ง 2 ตัว</span><span style="color:var(--white);font-weight:600">5,500฿</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:14px;color:var(--text-dim)"><span>ตั้งค่า LINE</span><span style="color:var(--white);font-weight:600">1,000฿</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:14px;color:var(--text-dim)"><span>Support รายปี</span><span style="color:var(--white);font-weight:600">3,000฿/ปี</span></div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;background:rgba(255,92,0,0.05);border:1px solid rgba(255,92,0,0.15);">
+      <div>
+        <div style="font-size:13px;color:var(--text-dim);margin-bottom:8px">ซื้อ Package แล้วให้ติดตั้ง</div>
+        <div style="font-size:24px;font-weight:700;color:var(--orange)">ส่วนลด 3%</div>
+        <div style="font-size:12px;color:var(--text-dim);margin-top:4px">จากราคา Package</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARKET -->
+<section id="market" class="market-section">
+  <div class="section-tag">กลุ่มลูกค้า</div>
+  <h2 class="section-title reveal">เหมาะสำหรับ<br>ทุกธุรกิจ</h2>
+
+  <div class="market-grid">
+    <div class="market-card reveal">
+      <div class="market-icon">🏘️</div>
+      <div>
+        <div class="market-title">หมู่บ้านจัดสรร</div>
+        <div class="market-desc">ตรวจจับคนแปลกหน้าที่ประตูหมู่บ้าน แจ้งเตือนนิติบุคคลและเจ้าของบ้านทันที</div>
+        <span class="market-tag">ยอดนิยม</span>
+      </div>
+    </div>
+    <div class="market-card reveal">
+      <div class="market-icon">🏭</div>
+      <div>
+        <div class="market-title">โรงงาน SME</div>
+        <div class="market-desc">บันทึกเวลาเข้า-ออกพนักงานอัตโนมัติ ลดงานธุรการและป้องกันการทุจริตเวลา</div>
+        <span class="market-tag">แนะนำ</span>
+      </div>
+    </div>
+    <div class="market-card reveal">
+      <div class="market-icon">⚡</div>
+      <div>
+        <div class="market-title">สถานีไฟฟ้า</div>
+        <div class="market-desc">ระบบความปลอดภัยชั้นสูง ตรวจจับผู้บุกรุกและแจ้งเตือนเจ้าหน้าที่ทันที</div>
+        <span class="market-tag">ความปลอดภัยสูง</span>
+      </div>
+    </div>
+    <div class="market-card reveal">
+      <div class="market-icon">🏢</div>
+      <div>
+        <div class="market-title">อาคารสำนักงาน</div>
+        <div class="market-desc">ระบบเข้าออกอาคารอัจฉริยะ บันทึกผู้เข้าพบและควบคุมการเข้าถึงพื้นที่</div>
+        <span class="market-tag">ใช้งานง่าย</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPARE -->
+<section>
+  <div class="section-tag">เปรียบเทียบ</div>
+  <h2 class="section-title reveal">WorkScan vs คู่แข่ง</h2>
+
+  <table class="compare-table reveal">
+    <thead>
+      <tr>
+        <th></th>
+        <th class="highlight">WorkScan</th>
+        <th>ZKTeco</th>
+        <th>Hikvision FaceID</th>
+        <th>Suprema</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>ราคาเริ่มต้น</td>
+        <td class="highlight">7,900฿</td>
+        <td>20,000฿+</td>
+        <td>15,000฿+</td>
+        <td>50,000฿+</td>
+      </tr>
+      <tr>
+        <td>ค่า License รายปี</td>
+        <td class="highlight"><span class="check">ไม่มี</span></td>
+        <td><span class="cross">มี</span></td>
+        <td><span class="cross">มี</span></td>
+        <td><span class="cross">มี</span></td>
+      </tr>
+      <tr>
+        <td>ติดตั้งเองได้</td>
+        <td class="highlight"><span class="check">✓ ทำได้</span></td>
+        <td><span class="cross">ต้องช่าง</span></td>
+        <td><span class="cross">ต้องช่าง</span></td>
+        <td><span class="cross">ต้องช่าง</span></td>
+      </tr>
+      <tr>
+        <td>แจ้งเตือน LINE</td>
+        <td class="highlight"><span class="check">✓ มี</span></td>
+        <td><span class="cross">ไม่มี</span></td>
+        <td><span class="cross">ไม่มี</span></td>
+        <td><span class="cross">ไม่มี</span></td>
+      </tr>
+      <tr>
+        <td>ใช้กล้องทั่วไปได้</td>
+        <td class="highlight"><span class="check">✓ ได้</span></td>
+        <td><span class="cross">Hardware เฉพาะ</span></td>
+        <td><span class="cross">Hardware เฉพาะ</span></td>
+        <td><span class="cross">Hardware เฉพาะ</span></td>
+      </tr>
+      <tr>
+        <td>ปรับแต่งได้</td>
+        <td class="highlight"><span class="check">✓ ทุกอย่าง</span></td>
+        <td><span class="cross">จำกัด</span></td>
+        <td><span class="cross">จำกัด</span></td>
+        <td><span class="cross">จำกัด</span></td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="contact">
+  <h2 class="cta-title">พร้อมเริ่มต้นแล้วใช่ไหม?</h2>
+  <p class="cta-desc">ดูหน้างานฟรี + สาธิตระบบจริง ราคาเพียง 800฿<br>ถ้าตัดสินใจซื้อ — หัก 3% จากราคา Package ทันที</p>
+  <div class="cta-btns">
+    <a href="tel:0800000000" class="btn-white">📞 โทรหาเรา</a>
+    <a href="https://line.me" class="btn-outline-white">💬 LINE สอบถาม</a>
+  </div>
+  <p style="margin-top:32px;font-size:13px;color:rgba(255,255,255,0.6)">WorkScan — Smart Security for Everyone</p>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">WORK<span>SCAN</span></div>
+  <div style="text-align:right">
+    <div class="footer-text">© 2568 WorkScan. ระบบตรวจจับใบหน้าอัจฉริยะ</div>
+    <div style="font-size:12px;color:var(--text-dim);margin-top:6px;font-family:'IBM Plex Mono',monospace;line-height:1.7">
+      จัดจำหน่ายโดย บริษัท ไทนามิก จำกัด<br>
+      <a href="http://tinamics.com" style="color:var(--orange);text-decoration:none;">tinamics.com</a>
+      &nbsp;|&nbsp;
+      <a href="mailto:sales@tinamic.com" style="color:var(--orange);text-decoration:none;">sales@tinamic.com</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Intersection Observer for scroll animations
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      entry.target.style.transitionDelay = (i * 0.05) + 's';
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.reveal, .stat-item').forEach(el => observer.observe(el));
+
+// Counter animation
+function animateCounter(el, target, duration = 1500) {
+  const isDecimal = target < 10;
+  const start = performance.now();
+  function update(now) {
+    const progress = Math.min((now - start) / duration, 1);
+    const ease = 1 - Math.pow(1 - progress, 3);
+    const current = isDecimal ? (target * ease).toFixed(1) : Math.round(target * ease).toLocaleString();
+    el.textContent = current;
+    if (progress < 1) requestAnimationFrame(update);
+  }
+  requestAnimationFrame(update);
+}
+
+const counterObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const el = entry.target.querySelector('.stat-num');
+      const target = parseFloat(el.dataset.target);
+      animateCounter(el, target);
+      counterObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.5 });
+
+document.querySelectorAll('.stat-item').forEach(el => counterObserver.observe(el));
+
+// Smooth scroll
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+</script>
+</body>
+</html>
