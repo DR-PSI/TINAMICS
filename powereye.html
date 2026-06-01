@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PowerEye — Tinamics Co., Ltd.</title>
+<link href="https://cdn.jsdelivr.net/npm/maplibre-gl@4.1.3/dist/maplibre-gl.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.1.3/dist/maplibre-gl.js"></script>
+<link rel="icon" href="data:image/x-icon;base64,AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA/4QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAERERERERERAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
 <meta name="theme-color" content="#ffd700">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -110,6 +113,14 @@ select{background:#080c14;color:#ffd700;border:1px solid #1e3a5f;border-radius:4
 .login-err{color:#ff4444;font-size:11px;margin-top:12px;display:none;}
 .login-brand{font-size:10px;color:#5a7a9a;margin-top:20px;}
 .login-brand span{color:#ffd700;}
+
+.map-panel{background:#0f1628;border:1px solid #1e3a5f;border-radius:8px;padding:12px;margin-bottom:10px;}
+#mapid{height:320px;border-radius:6px;border:1px solid #1e3a5f;z-index:10;position:relative;}
+.leaflet-popup-content-wrapper{background:#0f1628;border:1px solid #ffd700;color:#c8d8e8;border-radius:8px;}
+.leaflet-popup-tip{background:#0f1628;}
+.map-legend{display:flex;gap:12px;margin-top:8px;flex-wrap:wrap;}
+.leg-item{display:flex;align-items:center;gap:5px;font-size:10px;color:#5a7a9a;font-family:monospace;}
+.leg-dot{width:10px;height:10px;border-radius:50%;}
 </style>
 </head>
 <body>
@@ -186,6 +197,17 @@ select{background:#080c14;color:#ffd700;border:1px solid #1e3a5f;border-radius:4
         <div style="background:#080c14;border-radius:6px;height:14px;overflow:hidden"><div id="lb" style="height:100%;border-radius:6px;transition:width 1s;background:#00ff9d;width:0%"></div></div>
         <div style="display:flex;justify-content:space-between;margin-top:4px;font-size:10px;color:#5a7a9a"><span>0%</span><span id="lp" style="color:#ffd700">--</span><span>100%</span></div>
       </div>
+    </div>
+  </div>
+  <div class="map-panel" id="map-panel">
+    <div class="ptitle">GIS MAP — REAL-TIME UNIT LOCATIONS <span id="map-updated">LIVE</span></div>
+    <div id="mapid" style="width:100%;height:320px;min-height:320px;border-radius:6px;border:1px solid #1e3a5f;overflow:hidden;"></div>
+    <div class="map-legend">
+      <div class="leg-item"><div class="leg-dot" style="background:#00d4ff"></div>หม้อแปลง TF-001</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#ff6b35"></div>Solar ผิดกฎหมาย</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#ff4444"></div>EV Inrush</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#ffd700"></div>แรงดันสูง</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#00ff9d"></div>ปกติ</div>
     </div>
   </div>
   <div class="aipnl">
@@ -378,7 +400,8 @@ function renderAlerts(){
   document.getElementById('ac').textContent=alerts.length+' events';
 }
 
-function renderTLM(v,i,kw,kvar,pf,load){
+function if(map && houseMarkers.length) updateMapMarkers(vs,ps);
+  renderTLM(v,i,kw,kvar,pf,load){
   document.getElementById('tlm').innerHTML=
     '<div class="tlmr"><span class="tlmk">VOLTAGE (V)</span><span class="tlmv '+(v>245?'alrt':'ok')+'">'+v+' V</span></div>'+
     '<div class="tlmr"><span class="tlmk">CURRENT (I)</span><span class="tlmv blu">'+i+' A</span></div>'+
@@ -433,7 +456,108 @@ function update(){
   pc.data.datasets[0].data=pdata.slice();
   pc.data.datasets[0].backgroundColor=pdata.map(function(p){return p<0?'#ff6b35':'#00d4ff';});
   pc.update('none');
+  if(map && houseMarkers.length) updateMapMarkers(vs,ps);
   renderTLM(rnd(229,236),rnd(28,42).toFixed(1),rnd(6.2,9.8).toFixed(1),rnd(1.2,3.4).toFixed(1),rnd(0.88,0.97).toFixed(2),rnd(38,72));
+}
+
+
+// ============ GIS MAP (Mapbox GL) ============
+var map = null;
+var mapMarkers = [];
+
+
+
+// 10 house locations around Saphan Sung
+var HOUSE_COORDS = [
+  [100.7105, 13.7295], [100.7135, 13.7310],
+  [100.7148, 13.7265], [100.7112, 13.7250],
+  [100.7160, 13.7285], [100.7090, 13.7300],
+  [100.7115, 13.7320], [100.7130, 13.7240],
+  [100.7075, 13.7275], [100.7155, 13.7315]
+];
+
+var houseMarkers = [];
+
+function getMarkerColor(s){
+  if(s==='solar') return '#ff6b35';
+  if(s==='ev')    return '#ff4444';
+  if(s==='high')  return '#ffd700';
+  return '#00ff9d';
+}
+
+function initMapMarkers(){
+  HOUSE_COORDS.forEach(function(lnglat, i){
+    var el = document.createElement('div');
+    el.id = 'mpin'+i;
+    el.style.cssText = 'width:14px;height:14px;border-radius:50%;background:#00ff9d;border:2px solid #fff;box-shadow:0 0 8px #00ff9d;cursor:pointer;transition:all 0.3s;';
+    var popup = new maplibregl.Popup({offset:15, closeButton:false})
+      .setHTML('<div style="background:#0f1628;color:#c8d8e8;padding:8px;border-radius:6px;font-family:monospace;font-size:11px;border:1px solid #1e3a5f;"><b style="color:#ffd700">'+UNITS[i].id+'</b><div id="mpop'+i+'">Loading...</div></div>');
+    var m = new maplibregl.Marker({element:el})
+      .setLngLat(lnglat)
+      .setPopup(popup)
+      .addTo(map);
+    houseMarkers.push({marker:m, el:el});
+  });
+}
+
+function updateMapMarkers(vs, ps){
+  document.getElementById('map-updated').textContent = new Date().toTimeString().slice(0,8);
+  HOUSE_COORDS.forEach(function(lnglat, i){
+    var s = state(vs[i], ps[i]);
+    var col = getMarkerColor(s);
+    var pin = document.getElementById('mpin'+i);
+    if(pin){
+      pin.style.background = col;
+      pin.style.boxShadow = '0 0 10px '+col;
+    }
+    var pop = document.getElementById('mpop'+i);
+    if(pop){
+      pop.innerHTML = 'V: <b style="color:'+col+'">'+vs[i]+'V</b><br>P: '+(ps[i]>0?'+':'')+ps[i]+' kW<br><b style="color:'+col+'">'+(s==='solar'?'SOLAR':s==='ev'?'EV':s==='high'?'HIGH V':'OK')+'</b>';
+    }
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function(){
+  setTimeout(function(){
+    // Mapbox GL JS - ใช้ Demo Token สำหรับ Test
+    map = new maplibregl.Map({
+      container: 'mapid',
+      style: 'https://api.maptiler.com/maps/streets-v2-dark/style.json?key=mdMnHzVyIKe4hZ6k4rzT',
+      center: [100.7120, 13.7280],
+      zoom: 15
+    });
+    map.addControl(new maplibregl.NavigationControl());
+    map.on('load', function(){
+      var tfEl = document.createElement('div');
+      tfEl.style.cssText = 'width:20px;height:20px;border-radius:50%;background:#00d4ff;border:3px solid #fff;box-shadow:0 0 12px #00d4ff;cursor:pointer;';
+      new maplibregl.Marker({element:tfEl})
+        .setLngLat([100.7120, 13.7280])
+        .setPopup(new maplibregl.Popup({offset:25}).setHTML('<div style="background:#0f1628;color:#ffd700;padding:8px;border-radius:6px;font-family:monospace;font-size:11px;"><b>หม้อแปลง TF-001</b><br><span style="color:#c8d8e8">Tinamics Co., Ltd.<br>MEA TLM: ONLINE</span></div>'))
+        .addTo(map);
+      initMapMarkers();
+    });
+  }, 1500);
+});
+
+function initMap(){
+  if(typeof maplibregl === 'undefined'){ alert('MapLibre not loaded'); return; }
+  if(map) { map.resize(); return; }
+  map = new maplibregl.Map({
+    container: 'mapid',
+    style: 'https://api.maptiler.com/maps/streets-v2-dark/style.json?key=mdMnHzVyIKe4hZ6k4rzT',
+    center: [100.7120, 13.7280],
+    zoom: 15
+  });
+  map.addControl(new maplibregl.NavigationControl());
+  map.on('load', function(){
+    var tfEl = document.createElement('div');
+    tfEl.style.cssText = 'width:20px;height:20px;border-radius:50%;background:#00d4ff;border:3px solid #fff;box-shadow:0 0 12px #00d4ff;cursor:pointer;';
+    new maplibregl.Marker({element:tfEl})
+      .setLngLat([100.7120, 13.7280])
+      .setPopup(new maplibregl.Popup({offset:25}).setHTML('<div style="background:#0f1628;color:#ffd700;padding:8px;border-radius:6px;font-family:monospace;font-size:11px;"><b>หม้อแปลง TF-001</b><br><span style="color:#c8d8e8">Tinamics Co., Ltd.</span></div>'))
+      .addTo(map);
+    initMapMarkers();
+  });
 }
 
 function logout(){
@@ -459,6 +583,7 @@ function doLogin(){
   apiKey=k;
   sessionStorage.setItem('pe_key',k);
   document.getElementById('loginOverlay').style.display='none';
+  setTimeout(initMap, 500);
   // Update AI key status
 }
 
