@@ -553,6 +553,15 @@ function logout(){
   document.getElementById('msgs').innerHTML='<div class="msg"><div class="av bot">AI</div><div class="bbl">สวัสดีครับ ผม <b style="color:#c084fc">Hanuman Prime AI</b> พร้อมวิเคราะห์ระบบไฟฟ้าให้ครับ<br><br>ถามได้เลยครับ เช่น<br>• "วันนี้มีบ้านไหนน่าสงสัยบ้าง?"<br>• "สรุปสถานะระบบให้หน่อย"<br>• "บ้านไหนมี Solar ผิดกฎหมาย?"</div></div>';
 }
 
+// Auto init map when page loads (background)
+window.addEventListener('load', function(){
+  setTimeout(function(){
+    if(typeof maplibregl !== "undefined" && !map){
+      initMap();
+    }
+  }, 1000);
+});
+
 document.getElementById('usel').addEventListener('change',function(){selUnit=this.value;buildVC();});
 document.getElementById('mi').addEventListener('input',function(){this.style.height='auto';this.style.height=Math.min(this.scrollHeight,100)+'px';});
 document.getElementById('mi').addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}});
@@ -567,17 +576,7 @@ function doLogin(){
   apiKey=k;
   sessionStorage.setItem('pe_key',k);
   document.getElementById('loginOverlay').style.display='none';
-  // Try init map with retry
-var mapRetry = 0;
-function tryInitMap(){
-  if(typeof maplibregl !== "undefined"){
-    initMap();
-  } else if(mapRetry < 10){
-    mapRetry++;
-    setTimeout(tryInitMap, 500);
-  }
-}
-setTimeout(tryInitMap, 300);
+  initMap();
   // Update AI key status
 }
 
