@@ -470,11 +470,16 @@ var mapMarkers = [];
 
 // 10 house locations around Saphan Sung
 var HOUSE_COORDS = [
-  [100.7105, 13.7295], [100.7135, 13.7310],
-  [100.7148, 13.7265], [100.7112, 13.7250],
-  [100.7160, 13.7285], [100.7090, 13.7300],
-  [100.7115, 13.7320], [100.7130, 13.7240],
-  [100.7075, 13.7275], [100.7155, 13.7315]
+  [100.71058, 13.77331], // #01 - Solar ผิดกฎหมาย
+  [100.71462, 13.77354], // #02
+  [100.71009, 13.77146], // #03
+  [100.71494, 13.77095], // #04
+  [100.71186, 13.77289], // #05 - Tinamics Area
+  [100.71100, 13.77200], // #06 - simulate nearby
+  [100.71300, 13.77250], // #07
+  [100.71400, 13.77150], // #08
+  [100.71050, 13.77050], // #09
+  [100.71350, 13.77400]  // #10
 ];
 
 var houseMarkers = [];
@@ -524,7 +529,7 @@ function initMap(){
   map = new maplibregl.Map({
     container: 'mapid',
     style: 'https://api.maptiler.com/maps/streets-v2-dark/style.json?key=mdMnHzVyIKe4hZ6k4rzT',
-    center: [100.7120, 13.7280],
+    center: [100.71250, 13.77250],
     zoom: 15
   });
   map.addControl(new maplibregl.NavigationControl());
@@ -532,7 +537,7 @@ function initMap(){
     var tfEl = document.createElement('div');
     tfEl.style.cssText = 'width:20px;height:20px;border-radius:50%;background:#00d4ff;border:3px solid #fff;box-shadow:0 0 12px #00d4ff;cursor:pointer;';
     new maplibregl.Marker({element:tfEl})
-      .setLngLat([100.7120, 13.7280])
+      .setLngLat([100.71186, 13.77289])
       .setPopup(new maplibregl.Popup({offset:25}).setHTML('<div style="background:#0f1628;color:#ffd700;padding:8px;border-radius:6px;font-family:monospace;font-size:11px;"><b>หม้อแปลง TF-001</b><br><span style="color:#c8d8e8">Tinamics Co., Ltd.</span></div>'))
       .addTo(map);
     initMapMarkers();
@@ -562,7 +567,17 @@ function doLogin(){
   apiKey=k;
   sessionStorage.setItem('pe_key',k);
   document.getElementById('loginOverlay').style.display='none';
-  setTimeout(initMap, 500);
+  // Try init map with retry
+var mapRetry = 0;
+function tryInitMap(){
+  if(typeof maplibregl !== "undefined"){
+    initMap();
+  } else if(mapRetry < 10){
+    mapRetry++;
+    setTimeout(tryInitMap, 500);
+  }
+}
+setTimeout(tryInitMap, 300);
   // Update AI key status
 }
 
