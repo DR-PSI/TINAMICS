@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#060C14">
+<title>PowerEye AIMS</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Sarabun:wght@300;400;600;700&family=Share+Tech+Mono&display=swap');
+
+:root {
+  --gold: #F5C518;
+  --gold2: #E8A800;
+  --cyan: #00D4FF;
+  --green: #00E887;
+  --red: #FF4455;
+  --orange: #FF8C00;
+  --bg: #060C14;
+  --bg2: #0A1525;
+  --panel: #0D1E30;
+  --panel2: #112233;
+  --border: #1A3050;
+  --border2: #244060;
+  --text: #B8D4E8;
+  --text2: #6A8FA8;
+  --white: #EEF6FF;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+
+html,body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Sarabun',sans-serif;
+  height:100%;
+  overflow:hidden;
+}
+
+/* Scanline overlay */
+body::after{
+  content:'';
+  position:fixed;inset:0;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,212,255,0.015) 2px,rgba(0,212,255,0.015) 4px);
+  pointer-events:none;z-index:9999;
+}
+
+.app{display:flex;flex-direction:column;height:100dvh;height:100vh;}
+
+/* ── TOP BAR ── */
+.topbar{
+  display:flex;align-items:center;gap:12px;
+  padding:10px 16px;
+  padding-top:max(10px,env(safe-area-inset-top));
+  background:rgba(6,12,20,0.95);
+  border-bottom:1px solid var(--border);
+  backdrop-filter:blur(10px);
+  flex-shrink:0;
+  z-index:100;
+}
+
+.logo{
+  display:flex;align-items:center;gap:8px;
+}
+.logo-eye{
+  width:32px;height:32px;
+  background:var(--gold);
+  border-radius:6px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;
+  flex-shrink:0;
+  box-shadow:0 0 12px rgba(245,197,24,0.4);
+}
+.logo-text{
+  font-family:'Rajdhani',sans-serif;
+  font-size:20px;font-weight:700;
+  color:var(--white);letter-spacing:1px;
+}
+.logo-text span{color:var(--gold);}
+.logo-sub{
+  font-family:'Share Tech Mono',monospace;
+  font-size:9px;color:var(--text2);
+  letter-spacing:2px;margin-top:-2px;
+}
+
+.topbar-right{
+  margin-left:auto;
+  display:flex;align-items:center;gap:10px;
+}
+
+.site-badge{
+  background:rgba(0,212,255,0.1);
+  border:1px solid rgba(0,212,255,0.25);
+  border-radius:5px;
+  padding:4px 10px;
+  font-family:'Share Tech Mono',monospace;
+  font-size:10px;color:var(--cyan);
+  letter-spacing:1px;
+}
+
+.live-ind{
+  display:flex;align-items:center;gap:5px;
+  font-family:'Share Tech Mono',monospace;
+  font-size:10px;color:var(--green);
+}
+.live-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--green);
+  animation:livepulse 1.4s infinite;
+  box-shadow:0 0 5px var(--green);
+}
+@keyframes livepulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+.notif-btn{
+  position:relative;
+  background:rgba(255,255,255,0.06);
+  border:1px solid var(--border);
+  border-radius:8px;
+  width:34px;height:34px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;cursor:pointer;
+}
+.notif-badge{
+  position:absolute;top:-4px;right:-4px;
+  background:var(--red);
+  color:#fff;font-size:9px;font-weight:700;
+  border-radius:10px;padding:1px 5px;
+  font-family:'Share Tech Mono',monospace;
+}
+
+/* ── NAV TABS ── */
+.navtabs{
+  display:flex;
+  background:var(--bg2);
+  border-bottom:1px solid var(--border);
+  flex-shrink:0;overflow-x:auto;
+  scrollbar-width:none;
+}
+.navtabs::-webkit-scrollbar{display:none;}
+.navtab{
+  flex-shrink:0;
+  display:flex;align-items:center;gap:6px;
+  padding:11px 16px;
+  font-size:12px;font-weight:600;
+  color:var(--text2);
+  cursor:pointer;
+  border-bottom:2px solid transparent;
+  transition:all .2s;
+  white-space:nowrap;letter-spacing:.5px;
+  user-select:none;
+}
+.navtab .ti{font-size:14px;}
+.navtab.active{color:var(--gold);border-bottom-color:var(--gold);}
+.navtab:active{opacity:.7;}
+
+/* ── SCROLL CONTENT ── */
+.content{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;}
+.page{display:none;padding:14px;padding-bottom:80px;}
+.page.active{display:block;}
+
+/* ── KPI ROW ── */
+.kpi-row{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px;}
+.kpi-card{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:14px;
+  position:relative;overflow:hidden;
+  transition:transform .15s;
+}
+.kpi-card:active{transform:scale(.97);}
+.kpi-card::before{
+  content:'';position:absolute;
+  top:0;left:0;right:0;height:2px;
+}
+.kpi-card.gold::before{background:var(--gold);}
+.kpi-card.cyan::before{background:var(--cyan);}
+.kpi-card.green::before{background:var(--green);}
+.kpi-card.red::before{background:var(--red);}
+
+.kpi-label{font-size:10px;color:var(--text2);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;}
+.kpi-val{
+  font-family:'Rajdhani',sans-serif;
+  font-size:32px;font-weight:700;
+  color:var(--white);line-height:1;
+}
+.kpi-val.gold{color:var(--gold);}
+.kpi-val.cyan{color:var(--cyan);}
+.kpi-val.green{color:var(--green);}
+.kpi-val.red{color:var(--red);}
+.kpi-sub{font-size:11px;color:var(--text2);margin-top:4px;}
+.kpi-icon{
+  position:absolute;right:12px;top:12px;
+  font-size:22px;opacity:.25;
+}
+
+/* ── SECTION HEADER ── */
+.sec-hdr{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:10px;
+}
+.sec-title{
+  font-family:'Rajdhani',sans-serif;
+  font-size:14px;font-weight:700;
+  color:var(--white);letter-spacing:1px;
+  text-transform:uppercase;
+}
+.sec-more{
+  font-family:'Share Tech Mono',monospace;
+  font-size:10px;color:var(--cyan);
+  cursor:pointer;letter-spacing:1px;
+}
+
+/* ── ALERT FEED ── */
+.alert-feed{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;}
+.af-card{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:12px 14px 12px 18px;
+  position:relative;overflow:hidden;
+  cursor:pointer;transition:all .15s;
+}
+.af-card:active{transform:scale(.98);}
+.af-stripe{
+  position:absolute;left:0;top:0;bottom:0;width:4px;
+  border-radius:10px 0 0 10px;
+}
+.af-card.crit .af-stripe{background:var(--red);}
+.af-card.warn .af-stripe{background:var(--orange);}
+.af-card.ok   .af-stripe{background:var(--green);}
+.af-card.info .af-stripe{background:var(--cyan);}
+
+.af-top{display:flex;align-items:center;gap:8px;margin-bottom:4px;}
+.af-sev{
+  font-family:'Share Tech Mono',monospace;
+  font-size:9px;font-weight:700;
+  padding:2px 7px;border-radius:3px;letter-spacing:.8px;
+}
+.crit .af-sev{background:rgba(255,68,85,.2);color:var(--red);}
+.warn .af-sev{background:rgba(255,140,0,.2);color:var(--orange);}
+.ok   .af-sev{background:rgba(0,232,135,.15);color:var(--green);}
+.info .af-sev{background:rgba(0,212,255,.15);color:var(--cyan);}
+
+.af-title{font-size:13px;font-weight:700;color:var(--white);flex:1;}
+.af-time{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text2);}
+.af-meta{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text2);margin-bottom:3px;}
+.af-val{font-size:12px;color:var(--text);}
+
+.af-footer{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-top:8px;
+}
+.af-chips{display:flex;gap:6px;flex-wrap:wrap;}
+.chip{
+  background:rgba(255,255,255,.05);
+  border:1px solid var(--border);
+  border-radius:4px;padding:2px 7px;
+  font-family:'Share Tech Mono',monospace;font-size:10px;
+  color:var(--text);
+}
+.chip span{color:var(--gold);}
+.af-wo-btn{
+  background:var(--gold);color:#000;
+  border:none;border-radius:6px;
+  padding:5px 12px;
+  font-family:'Share Tech Mono',monospace;
+  font-size:10px;font-weight:700;
+  cursor:pointer;white-space:nowrap;
+  transition:all .15s;
+}
+.af-wo-btn:active{transform:scale(.95);}
+.af-wo-btn.sent{background:var(--green);color:#000;}
+
+/* ── ASSET MAP PLACEHOLDER ── */
+.map-box{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:10px;
+  height:200px;
+  position:relative;overflow:hidden;
+  margin-bottom:16px;
+}
+.map-grid{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(0,212,255,.06) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,212,255,.06) 1px,transparent 1px);
+  background-size:30px 30px;
+}
+.map-label{
+  position:absolute;top:12px;left:14px;
+  font-family:'Share Tech Mono',monospace;
+  font-size:10px;color:var(--cyan);letter-spacing:1px;
+}
+.map-pins{position:absolute;inset:0;}
+.pin{
+  position:absolute;
+  display:flex;align-items:center;justify-content:center;
+  width:28px;height:28px;
+  border-radius:50%;
+  border:2px solid;
+  font-size:12px;
+  cursor:pointer;
+  animation:pinpulse 2s infinite;
+  transition:transform .15s;
+}
+.pin:active{transform:scale(1.3);}
+.pin.crit{background:rgba(255,68,85,.2);border-color:var(--red);animation-delay:.3s;}
+.pin.warn{background:rgba(255,140,0,.2);border-color:var(--orange);animation-delay:.6s;}
+.pin.ok  {background:rgba(0,232,135,.15);border-color:var(--green);animation-delay:.9s;}
+@keyframes pinpulse{
+  0%,100%{box-shadow:0 0 0 0 currentColor;}
+  50%{box-shadow:0 0 0 6px transparent;}
+}
+.pin.crit{color:var(--red);}
+.pin.warn{color:var(--orange);}
+.pin.ok  {color:var(--green);}
+
+.map-legend{
+  position:absolute;bottom:10px;right:12px;
+  display:flex;gap:10px;
+}
+.map-leg-item{
+  display:flex;align-items:center;gap:4px;
+  font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text2);
+}
+.leg-dot{width:7px;height:7px;border-radius:50%;}
+
+/* ── AI INSIGHT ── */
+.ai-card{
+  background:linear-gradient(135deg,rgba(0,212,255,.08),rgba(245,197,24,.05));
+  border:1px solid rgba(0,212,255,.2);
+  border-radius:10px;padding:14px;
+  margin-bottom:16px;
+  position:relative;overflow:hidden;
+}
+.ai-card::before{
+  content:'AI';
+  position:absolute;right:14px;top:14px;
+  font-family:'Rajdhani',monospace;
+  font-size:48px;font-weight:700;
+  color:rgba(0,212,255,.06);
+  letter-spacing:2px;
+}
+.ai-hdr{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.ai-icon{
+  width:28px;height:28px;
+  background:rgba(0,212,255,.15);
+  border:1px solid rgba(0,212,255,.3);
+  border-radius:6px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;
+}
+.ai-title{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;color:var(--cyan);letter-spacing:1px;}
+.ai-items{display:flex;flex-direction:column;gap:8px;}
+.ai-item{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:8px 10px;
+  background:rgba(0,0,0,.2);border-radius:6px;
+}
+.ai-item-icon{font-size:16px;flex-shrink:0;margin-top:1px;}
+.ai-item-text{font-size:12px;color:var(--text);line-height:1.5;}
+.ai-item-text strong{color:var(--white);}
+
+/* ── STATS GRID ── */
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px;}
+.stat-card{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:12px 10px;text-align:center;
+}
+.stat-val{
+  font-family:'Rajdhani',sans-serif;
+  font-size:24px;font-weight:700;
+  color:var(--white);
+}
+.stat-label{font-size:10px;color:var(--text2);letter-spacing:.5px;margin-top:2px;}
+
+/* ── WORK ORDERS ── */
+.wo-list{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;}
+.wo-card{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:12px 14px;
+  display:flex;align-items:center;gap:12px;
+  cursor:pointer;transition:all .15s;
+}
+.wo-card:active{transform:scale(.98);}
+.wo-num-box{
+  background:rgba(245,197,24,.1);
+  border:1px solid rgba(245,197,24,.3);
+  border-radius:6px;padding:6px 10px;
+  font-family:'Share Tech Mono',monospace;
+  font-size:12px;font-weight:700;color:var(--gold);
+  white-space:nowrap;flex-shrink:0;
+}
+.wo-info{flex:1;}
+.wo-title{font-size:13px;font-weight:700;color:var(--white);margin-bottom:2px;}
+.wo-meta{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text2);}
+.wo-status{
+  font-family:'Share Tech Mono',monospace;
+  font-size:10px;font-weight:700;
+  padding:3px 8px;border-radius:4px;
+  white-space:nowrap;
+}
+.wo-status.open{background:rgba(0,212,255,.15);color:var(--cyan);}
+.wo-status.progress{background:rgba(245,197,24,.15);color:var(--gold);}
+.wo-status.done{background:rgba(0,232,135,.15);color:var(--green);}
+
+/* ── BOTTOM NAV ── */
+.bottomnav{
+  position:fixed;bottom:0;left:0;right:0;
+  background:rgba(6,12,20,.97);
+  border-top:1px solid var(--border);
+  display:flex;
+  padding-bottom:max(8px,env(safe-area-inset-bottom));
+  backdrop-filter:blur(10px);
+  z-index:100;
+}
+.bnav-item{
+  flex:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:8px 4px;gap:3px;
+  cursor:pointer;
+  font-size:10px;font-weight:600;
+  color:var(--text2);letter-spacing:.3px;
+  transition:color .15s;user-select:none;
+}
+.bnav-item:active{opacity:.7;}
+.bnav-item.active{color:var(--gold);}
+.bnav-icon{font-size:20px;}
+.bnav-item.active .bnav-icon{
+  filter:drop-shadow(0 0 4px var(--gold));
+}
+
+/* ── TOAST ── */
+.toast{
+  position:fixed;top:70px;left:50%;transform:translateX(-50%) translateY(-20px);
+  background:var(--green);color:#000;
+  font-family:'Share Tech Mono',monospace;
+  font-size:12px;font-weight:700;
+  padding:10px 20px;border-radius:8px;
+  letter-spacing:1px;white-space:nowrap;
+  opacity:0;transition:all .3s;
+  z-index:9999;pointer-events:none;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:3px;}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
+
+/* ── ANIMATIONS ── */
+.fade-in{animation:fadeIn .4s ease forwards;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="logo">
+    <div class="logo-eye">⚡</div>
+    <div>
+      <div class="logo-text">PowerEye <span>AIMS</span></div>
+      <div class="logo-sub">AI INTELLIGENT MAINTENANCE</div>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <div class="site-badge">MEA · สะพานสูง</div>
+    <div class="live-ind"><div class="live-dot"></div>LIVE</div>
+    <div class="notif-btn" onclick="showToast('3 alerts รอดำเนินการ')">
+      🔔<span class="notif-badge">3</span>
+    </div>
+  </div>
+</div>
+
+<!-- NAV TABS -->
+<div class="navtabs">
+  <div class="navtab active" onclick="switchTab('dashboard',this)"><span class="ti">📊</span>DASHBOARD</div>
+  <div class="navtab" onclick="switchTab('alerts',this)"><span class="ti">⚠️</span>ALERTS</div>
+  <div class="navtab" onclick="switchTab('workorders',this)"><span class="ti">🔧</span>WORK ORDERS</div>
+  <div class="navtab" onclick="switchTab('assets',this)"><span class="ti">🏭</span>ASSETS</div>
+  <div class="navtab" onclick="switchTab('ai',this)"><span class="ti">🤖</span>AI INSIGHT</div>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+  <!-- DASHBOARD -->
+  <div class="page active fade-in" id="page-dashboard">
+
+    <!-- KPI -->
+    <div class="kpi-row">
+      <div class="kpi-card red" onclick="switchTabById('alerts')">
+        <div class="kpi-icon">⚠️</div>
+        <div class="kpi-label">Critical Alerts</div>
+        <div class="kpi-val red">3</div>
+        <div class="kpi-sub">รอดำเนินการ</div>
+      </div>
+      <div class="kpi-card gold" onclick="switchTabById('workorders')">
+        <div class="kpi-icon">🔧</div>
+        <div class="kpi-label">Work Orders</div>
+        <div class="kpi-val gold">12</div>
+        <div class="kpi-sub">เปิดอยู่</div>
+      </div>
+      <div class="kpi-card green">
+        <div class="kpi-icon">✅</div>
+        <div class="kpi-label">Asset Health</div>
+        <div class="kpi-val green">87%</div>
+        <div class="kpi-sub">ระบบปกติ</div>
+      </div>
+      <div class="kpi-card cyan">
+        <div class="kpi-icon">⚡</div>
+        <div class="kpi-label">Monitoring</div>
+        <div class="kpi-val cyan">24</div>
+        <div class="kpi-sub">จุด Online</div>
+      </div>
+    </div>
+
+    <!-- MAP -->
+    <div class="sec-hdr">
+      <div class="sec-title">📍 Asset Map — สะพานสูง</div>
+      <div class="sec-more" onclick="showToast('MapLibre GL กำลัง integrate')">Full Map →</div>
+    </div>
+    <div class="map-box">
+      <div class="map-grid"></div>
+      <div class="map-label">MEA DISTRIBUTION · 24kV/230V</div>
+      <div class="map-pins">
+        <div class="pin crit" style="left:25%;top:35%" onclick="showToast('TF-001: Solar Illegal Injection!')">⚡</div>
+        <div class="pin warn" style="left:55%;top:55%" onclick="showToast('TF-003: Voltage Imbalance')">⚠</div>
+        <div class="pin warn" style="left:70%;top:25%" onclick="showToast('SS-002: Battery SOH 71%')">🔋</div>
+        <div class="pin ok"   style="left:40%;top:70%" onclick="showToast('TF-005: ปกติ')">✓</div>
+        <div class="pin ok"   style="left:80%;top:60%" onclick="showToast('TF-007: ปกติ')">✓</div>
+      </div>
+      <div class="map-legend">
+        <div class="map-leg-item"><div class="leg-dot" style="background:var(--red)"></div>Critical</div>
+        <div class="map-leg-item"><div class="leg-dot" style="background:var(--orange)"></div>Warning</div>
+        <div class="map-leg-item"><div class="leg-dot" style="background:var(--green)"></div>Normal</div>
+      </div>
+    </div>
+
+    <!-- RECENT ALERTS -->
+    <div class="sec-hdr">
+      <div class="sec-title">🔴 Recent Alerts</div>
+      <div class="sec-more" onclick="switchTabById('alerts')">ทั้งหมด →</div>
+    </div>
+    <div class="alert-feed">
+      <div class="af-card crit">
+        <div class="af-stripe"></div>
+        <div class="af-top">
+          <span class="af-sev">CRITICAL</span>
+          <span class="af-title">Solar Illegal Injection</span>
+          <span class="af-time">14:32</span>
+        </div>
+        <div class="af-meta">TF-001 · สะพานสูง ซ.3</div>
+        <div class="af-footer">
+          <div class="af-chips">
+            <div class="chip">I: <span>487A</span></div>
+            <div class="chip">THD: <span>28.4%</span></div>
+          </div>
+          <button class="af-wo-btn" onclick="sendWO(this,'TF-001')">→ Maximo</button>
+        </div>
+      </div>
+      <div class="af-card warn">
+        <div class="af-stripe"></div>
+        <div class="af-top">
+          <span class="af-sev">WARNING</span>
+          <span class="af-title">Battery SOH Low</span>
+          <span class="af-time">14:15</span>
+        </div>
+        <div class="af-meta">SS-002 · สถานีย่อย B</div>
+        <div class="af-footer">
+          <div class="af-chips">
+            <div class="chip">SOH: <span>71.2%</span></div>
+          </div>
+          <button class="af-wo-btn" onclick="sendWO(this,'SS-002')">→ Maximo</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="sec-hdr"><div class="sec-title">📈 Today Stats</div></div>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-val" style="color:var(--red)">3</div>
+        <div class="stat-label">Alerts</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" style="color:var(--gold)">5</div>
+        <div class="stat-label">WO Created</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" style="color:var(--green)">2</div>
+        <div class="stat-label">WO Closed</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" style="color:var(--cyan)">99.2%</div>
+        <div class="stat-label">Uptime</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" style="color:var(--white)">1.2h</div>
+        <div class="stat-label">Avg Response</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" style="color:var(--green)">฿84K</div>
+        <div class="stat-label">Saved</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ALERTS PAGE -->
+  <div class="page fade-in" id="page-alerts">
+    <div class="sec-hdr" style="margin-bottom:12px">
+      <div class="sec-title">⚠️ All Alerts</div>
+      <div class="sec-more">Filter ▾</div>
+    </div>
+    <div class="alert-feed">
+      <div class="af-card crit">
+        <div class="af-stripe"></div>
+        <div class="af-top"><span class="af-sev">CRITICAL</span><span class="af-title">Solar Illegal Injection</span><span class="af-time">14:32</span></div>
+        <div class="af-meta">TF-001 · สะพานสูง ซ.3 · GPS 13.7563, 100.5018</div>
+        <div class="af-val">EV Inrush ย้อนกลับผิดกฎหมาย — เกิน limit 350A</div>
+        <div class="af-footer">
+          <div class="af-chips"><div class="chip">I: <span>487A</span></div><div class="chip">THD: <span>28.4%</span></div><div class="chip">PF: <span>0.71</span></div></div>
+          <button class="af-wo-btn" onclick="sendWO(this,'TF-001')">→ Maximo</button>
+        </div>
+      </div>
+      <div class="af-card warn">
+        <div class="af-stripe"></div>
+        <div class="af-top"><span class="af-sev">WARNING</span><span class="af-title">Voltage Imbalance</span><span class="af-time">14:28</span></div>
+        <div class="af-meta">TF-003 · สะพานสูง ซ.7</div>
+        <div class="af-val">Phase A-C ต่างกัน 23V เกิน ±5%</div>
+        <div class="af-footer">
+          <div class="af-chips"><div class="chip">A: <span>241V</span></div><div class="chip">C: <span>218V</span></div></div>
+          <button class="af-wo-btn" onclick="sendWO(this,'TF-003')">→ Maximo</button>
+        </div>
+      </div>
+      <div class="af-card warn">
+        <div class="af-stripe"></div>
+        <div class="af-top"><span class="af-sev">WARNING</span><span class="af-title">Battery SOH Degradation</span><span class="af-time">14:15</span></div>
+        <div class="af-meta">SS-002 · สถานีย่อย B</div>
+        <div class="af-val">SOH 71.2% ต่ำกว่า threshold — คาดเปลี่ยนใน 45 วัน</div>
+        <div class="af-footer">
+          <div class="af-chips"><div class="chip">SOH: <span>71.2%</span></div><div class="chip">Cycle: <span>1847</span></div></div>
+          <button class="af-wo-btn" onclick="sendWO(this,'SS-002')">→ Maximo</button>
+        </div>
+      </div>
+      <div class="af-card info">
+        <div class="af-stripe"></div>
+        <div class="af-top"><span class="af-sev">INFO</span><span class="af-title">Predictive Maintenance</span><span class="af-time">14:00</span></div>
+        <div class="af-meta">TF-005 · สะพานสูง ซ.12</div>
+        <div class="af-val">AI คาดเปลี่ยนน้ำมันใน 14 วัน จาก Thermal Analysis</div>
+        <div class="af-footer">
+          <div class="af-chips"><div class="chip">Temp: <span>72°C</span></div><div class="chip">Load: <span>84%</span></div></div>
+          <button class="af-wo-btn" onclick="sendWO(this,'TF-005')">→ Maximo</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WORK ORDERS -->
+  <div class="page fade-in" id="page-workorders">
+    <div class="sec-hdr" style="margin-bottom:12px">
+      <div class="sec-title">🔧 Work Orders — CMMS MEA</div>
+      <div class="sec-more">+ New</div>
+    </div>
+    <div class="wo-list">
+      <div class="wo-card"><div class="wo-num-box">WO-240892</div><div class="wo-info"><div class="wo-title">Solar Injection TF-001</div><div class="wo-meta">DT1C · MEA-ELEC-CREW-04 · สะพานสูง</div></div><div class="wo-status open">OPEN</div></div>
+      <div class="wo-card"><div class="wo-num-box">WO-240891</div><div class="wo-info"><div class="wo-title">Battery SOH SS-002</div><div class="wo-meta">DT1C · MEA-ELEC-CREW-02 · สถานีย่อย B</div></div><div class="wo-status progress">IN PROG</div></div>
+      <div class="wo-card"><div class="wo-num-box">WO-240889</div><div class="wo-info"><div class="wo-title">Voltage Check TF-007</div><div class="wo-meta">DT1C · MEA-ELEC-CREW-01 · ซ.9</div></div><div class="wo-status done">CLOSED</div></div>
+      <div class="wo-card"><div class="wo-num-box">WO-240887</div><div class="wo-info"><div class="wo-title">PM Oil Change TF-003</div><div class="wo-meta">DT1C · MEA-ELEC-CREW-03 · ซ.7</div></div><div class="wo-status done">CLOSED</div></div>
+    </div>
+    <div style="text-align:center;padding:10px 0;">
+      <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text2)">ดึงข้อมูลจาก cmms.mea.or.th · อัปเดต 14:32:11</div>
+    </div>
+  </div>
+
+  <!-- ASSETS -->
+  <div class="page fade-in" id="page-assets">
+    <div class="sec-hdr" style="margin-bottom:12px"><div class="sec-title">🏭 Assets — สะพานสูง</div></div>
+    <div class="wo-list">
+      <div class="wo-card"><div class="wo-num-box" style="color:var(--red);border-color:rgba(255,68,85,.3)">TF-001</div><div class="wo-info"><div class="wo-title">หม้อแปลง 24kV/230V ซ.3</div><div class="wo-meta">⚡ EV Inrush · SOH 91% · 487A</div></div><div class="wo-status open" style="background:rgba(255,68,85,.15);color:var(--red)">CRIT</div></div>
+      <div class="wo-card"><div class="wo-num-box" style="color:var(--orange);border-color:rgba(255,140,0,.3)">TF-003</div><div class="wo-info"><div class="wo-title">หม้อแปลง 24kV/230V ซ.7</div><div class="wo-meta">⚠ Volt Imbalance · 241V/218V</div></div><div class="wo-status progress" style="background:rgba(255,140,0,.15);color:var(--orange)">WARN</div></div>
+      <div class="wo-card"><div class="wo-num-box" style="color:var(--orange);border-color:rgba(255,140,0,.3)">SS-002</div><div class="wo-info"><div class="wo-title">Battery LiFePO4 สถานีย่อย B</div><div class="wo-meta">🔋 SOH 71.2% · Cycle 1847</div></div><div class="wo-status progress" style="background:rgba(255,140,0,.15);color:var(--orange)">WARN</div></div>
+      <div class="wo-card"><div class="wo-num-box">TF-005</div><div class="wo-info"><div class="wo-title">หม้อแปลง 24kV/230V ซ.12</div><div class="wo-meta">✓ ปกติ · Temp 72°C · Load 84%</div></div><div class="wo-status done">OK</div></div>
+      <div class="wo-card"><div class="wo-num-box">TF-007</div><div class="wo-info"><div class="wo-title">หม้อแปลง 24kV/230V ซ.9</div><div class="wo-meta">✓ ปกติ · Temp 58°C · Load 71%</div></div><div class="wo-status done">OK</div></div>
+    </div>
+  </div>
+
+  <!-- AI INSIGHT -->
+  <div class="page fade-in" id="page-ai">
+    <div class="sec-hdr" style="margin-bottom:12px"><div class="sec-title">🤖 Hanuman Prime AI</div></div>
+
+    <div class="ai-card">
+      <div class="ai-hdr">
+        <div class="ai-icon">🔮</div>
+        <div class="ai-title">PREDICTIVE ANALYSIS</div>
+      </div>
+      <div class="ai-items">
+        <div class="ai-item"><div class="ai-item-icon">⚡</div><div class="ai-item-text"><strong>TF-001</strong> — ตรวจพบ Solar Injection ผิดกฎหมาย ความน่าจะเป็น 94.2% แนะนำส่ง Work Order ด่วน</div></div>
+        <div class="ai-item"><div class="ai-item-icon">🔋</div><div class="ai-item-text"><strong>SS-002</strong> — LSTM คาดการณ์ Battery จะถึง End-of-Life ใน <strong>38–52 วัน</strong> ควรสั่งซื้อล่วงหน้า</div></div>
+        <div class="ai-item"><div class="ai-item-icon">🌡️</div><div class="ai-item-text"><strong>TF-005</strong> — Thermal Pattern ผิดปกติ Load สูงกว่า baseline 12% แนะนำตรวจสอบน้ำมันใน 14 วัน</div></div>
+        <div class="ai-item"><div class="ai-item-icon">📈</div><div class="ai-item-text">ระบบ 24 จุด <strong>สุขภาพโดยรวม 87%</strong> — ดีกว่าเดือนที่แล้ว +3.2%</div></div>
+      </div>
+    </div>
+
+    <div class="ai-card" style="background:linear-gradient(135deg,rgba(245,197,24,.06),rgba(0,232,135,.04));border-color:rgba(245,197,24,.2)">
+      <div class="ai-hdr">
+        <div class="ai-icon" style="background:rgba(245,197,24,.15);border-color:rgba(245,197,24,.3)">💰</div>
+        <div class="ai-title" style="color:var(--gold)">ROI ANALYSIS</div>
+      </div>
+      <div class="ai-items">
+        <div class="ai-item"><div class="ai-item-icon">✅</div><div class="ai-item-text">เดือนนี้ป้องกันความเสียหายได้ <strong style="color:var(--gold)">฿840,000</strong> จาก 5 incidents</div></div>
+        <div class="ai-item"><div class="ai-item-icon">⏱️</div><div class="ai-item-text">ลด Response Time จาก 4.2h → <strong style="color:var(--green)">1.2h</strong> (-71%)</div></div>
+        <div class="ai-item"><div class="ai-item-icon">📋</div><div class="ai-item-text">Work Order อัตโนมัติ <strong style="color:var(--cyan)">5 รายการ</strong> ไม่ต้องกรอกมือ</div></div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /content -->
+
+<!-- BOTTOM NAV -->
+<div class="bottomnav">
+  <div class="bnav-item active" onclick="switchTab('dashboard',null,this)" id="bn-dashboard">
+    <div class="bnav-icon">📊</div>HOME
+  </div>
+  <div class="bnav-item" onclick="switchTab('alerts',null,this)" id="bn-alerts">
+    <div class="bnav-icon">⚠️</div>ALERTS
+  </div>
+  <div class="bnav-item" onclick="switchTab('workorders',null,this)" id="bn-workorders">
+    <div class="bnav-icon">🔧</div>WORK
+  </div>
+  <div class="bnav-item" onclick="switchTab('assets',null,this)" id="bn-assets">
+    <div class="bnav-icon">🏭</div>ASSETS
+  </div>
+  <div class="bnav-item" onclick="switchTab('ai',null,this)" id="bn-ai">
+    <div class="bnav-icon">🤖</div>AI
+  </div>
+</div>
+
+</div><!-- /app -->
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+let woCounter = 240892;
+
+function switchTab(id, tabEl, bnEl) {
+  // pages
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const pg = document.getElementById('page-'+id);
+  pg.classList.add('active');
+  pg.classList.remove('fade-in');
+  void pg.offsetWidth;
+  pg.classList.add('fade-in');
+
+  // top tabs
+  if(tabEl) {
+    document.querySelectorAll('.navtab').forEach(t => t.classList.remove('active'));
+    tabEl.classList.add('active');
+  } else {
+    document.querySelectorAll('.navtab').forEach((t,i) => {
+      const ids = ['dashboard','alerts','workorders','assets','ai'];
+      t.classList.toggle('active', ids[i]===id);
+    });
+  }
+
+  // bottom nav
+  document.querySelectorAll('.bnav-item').forEach(b => b.classList.remove('active'));
+  const bn = document.getElementById('bn-'+id);
+  if(bn) bn.classList.add('active');
+}
+
+function switchTabById(id) {
+  switchTab(id, null, null);
+}
+
+function sendWO(btn, asset) {
+  if(btn.classList.contains('sent')) return;
+  btn.textContent = '...';
+  btn.disabled = true;
+  setTimeout(() => {
+    woCounter++;
+    btn.textContent = '✓ WO-'+woCounter;
+    btn.classList.add('sent');
+    showToast('✓ WO-'+woCounter+' ส่งไป cmms.mea.or.th แล้ว');
+    // update notif
+    const nb = document.querySelector('.notif-badge');
+    const cur = parseInt(nb.textContent);
+    if(cur > 0) nb.textContent = cur-1;
+    if(parseInt(nb.textContent) === 0) nb.style.display='none';
+  }, 1200);
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// sync navtabs with bottom nav clicks
+document.querySelectorAll('.navtab').forEach((t,i) => {
+  t.addEventListener('click', function() {
+    const ids = ['dashboard','alerts','workorders','assets','ai'];
+    switchTab(ids[i], this, null);
+  });
+});
+</script>
+</body>
+</html>
